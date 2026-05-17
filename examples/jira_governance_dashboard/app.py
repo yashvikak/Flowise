@@ -14,6 +14,9 @@ import plotly.express as px
 import streamlit as st
 
 APP_DIR = Path(__file__).parent
+# To permanently replace the mock data later, put your Jira CSV in this
+# folder and update this filename. You can also leave this line unchanged
+# and use the sidebar uploader at runtime.
 SAMPLE_DATA_PATH = APP_DIR / "sample_jira_tickets.csv"
 TODAY = date(2026, 5, 17)
 STATUS_ORDER = ["To Do", "In Progress", "Blocked", "In Review", "Done"]
@@ -146,13 +149,19 @@ def apply_filters(df: pd.DataFrame) -> pd.DataFrame:
     uploaded_file = st.sidebar.file_uploader(
         "Optional: upload your Jira CSV later",
         type=["csv"],
-        help="For now, leave this blank to use the bundled sample Jira data.",
+        help=(
+            "Use this when you have your Jira export. No code change is needed: "
+            "upload the CSV here and the dashboard will use it for this session."
+        ),
     )
     if uploaded_file is not None:
         df = normalise_jira_data(pd.read_csv(uploaded_file))
         st.sidebar.success("Using uploaded Jira CSV")
     else:
-        st.sidebar.info("Using realistic sample Jira data")
+        st.sidebar.info(
+            "Using realistic sample Jira data from "
+            "examples/jira_governance_dashboard/sample_jira_tickets.csv"
+        )
 
     client_options = sorted(df["client"].dropna().unique()) if "client" in df.columns else []
     selected_clients = st.sidebar.multiselect("Client", client_options, default=client_options)

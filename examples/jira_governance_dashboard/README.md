@@ -60,12 +60,44 @@ streamlit run examples/jira_governance_dashboard/app.py
 
 Streamlit will print a local URL, usually `http://localhost:8501`. Open that URL in your browser.
 
-## How to use your own Jira export later
+## Exactly where to replace the sample CSV later
 
-1. Export your Jira issues as a CSV file.
-2. Start the Streamlit app.
-3. Use the sidebar field named **Optional: upload your Jira CSV later**.
-4. Upload your CSV.
+You have two simple options. Use **Option A** if you do not want to edit any files. Use **Option B** if you want your Jira export to become the default dataset every time the app opens.
+
+### Option A: Upload your Jira CSV inside the dashboard, no code changes
+
+1. Export your issues from Jira as a CSV file.
+2. Start the dashboard with:
+
+   ```bash
+   streamlit run examples/jira_governance_dashboard/app.py
+   ```
+
+3. In the left sidebar, find **Optional: upload your Jira CSV later**.
+4. Click **Browse files** and select your Jira CSV export.
+5. The dashboard will use your uploaded CSV for that browser session. The original mock CSV file remains untouched.
+
+### Option B: Replace the default sample CSV file
+
+1. Save a backup copy of the current sample file if you want to keep it:
+
+   ```bash
+   cp examples/jira_governance_dashboard/sample_jira_tickets.csv examples/jira_governance_dashboard/sample_jira_tickets.backup.csv
+   ```
+
+2. Copy your real Jira export into this exact location and filename:
+
+   ```text
+   examples/jira_governance_dashboard/sample_jira_tickets.csv
+   ```
+
+3. Restart the dashboard. The app loads that file by default because `app.py` points to:
+
+   ```python
+   SAMPLE_DATA_PATH = APP_DIR / "sample_jira_tickets.csv"
+   ```
+
+4. If you prefer to keep your export under a different filename, place it in the same folder and change only the filename in `SAMPLE_DATA_PATH` inside `examples/jira_governance_dashboard/app.py`.
 
 For the first prototype, your CSV should contain these columns:
 
