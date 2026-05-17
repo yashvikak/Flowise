@@ -1,0 +1,31 @@
+issue_key,summary,status,priority,assignee,client,created,due_date,resolved,estimated_hours,actual_hours,response_hours,sla_target_hours,escalated,blocked,action_item
+MS-1001,VPN access fails for finance users,In Progress,High,Ava Patel,Contoso Bank,2026-04-21,2026-05-10,,14,22,5,4,True,False,True
+MS-1002,Monthly patching validation,Done,Medium,Noah Chen,Contoso Bank,2026-05-03,2026-05-12,2026-05-12,10,9,3,8,False,False,False
+MS-1003,Database backup alert review,Blocked,Critical,Mia Rodriguez,Northwind Health,2026-04-29,2026-05-08,,18,27,2,2,True,True,True
+MS-1004,Add new SSO application,To Do,Medium,Liam Smith,Fabrikam Retail,2026-05-15,2026-05-22,,12,0,7,8,False,False,False
+MS-1005,Resolve intermittent API timeout,In Review,High,Emma Johnson,Adventure Works,2026-05-01,2026-05-16,,24,31,6,4,True,False,True
+MS-1006,Laptop encryption exception cleanup,Done,Low,Olivia Brown,Fabrikam Retail,2026-04-18,2026-05-05,2026-05-04,8,7,11,24,False,False,False
+MS-1007,Email quarantine false positives,In Progress,Medium,Ava Patel,Northwind Health,2026-05-09,2026-05-20,,16,10,5,8,False,False,False
+MS-1008,Critical server disk expansion,Blocked,Critical,Noah Chen,Contoso Bank,2026-05-06,2026-05-13,,20,18,1,2,True,True,True
+MS-1009,User onboarding automation bug,To Do,High,Sophia Lee,Adventure Works,2026-05-13,2026-05-19,,14,0,4,4,False,False,False
+MS-1010,Firewall rule recertification,In Progress,Medium,Mia Rodriguez,Fabrikam Retail,2026-04-25,2026-05-18,,22,17,9,8,False,False,True
+MS-1011,Privileged access review,In Review,High,Liam Smith,Contoso Bank,2026-04-20,2026-05-14,,26,29,3,4,True,False,True
+MS-1012,Update monitoring thresholds,Done,Low,Emma Johnson,Northwind Health,2026-05-07,2026-05-15,2026-05-14,6,5,12,24,False,False,False
+MS-1013,Endpoint agent upgrade pilot,In Progress,Medium,Olivia Brown,Adventure Works,2026-05-11,2026-05-24,,18,9,6,8,False,False,False
+MS-1014,Invoice integration job failure,Blocked,High,Sophia Lee,Fabrikam Retail,2026-04-30,2026-05-11,,16,20,5,4,True,True,True
+MS-1015,Certificate renewal planning,To Do,High,Ava Patel,Contoso Bank,2026-05-16,2026-05-21,,8,0,2,4,False,False,False
+MS-1016,Data warehouse permissions cleanup,In Progress,Medium,Noah Chen,Northwind Health,2026-04-16,2026-05-23,,30,24,10,8,False,False,True
+MS-1017,Incident postmortem action tracking,In Review,Critical,Mia Rodriguez,Adventure Works,2026-05-04,2026-05-17,,12,14,2,2,True,False,True
+MS-1018,Mobile device policy update,Done,Medium,Liam Smith,Fabrikam Retail,2026-05-02,2026-05-10,2026-05-09,9,8,6,8,False,False,False
+MS-1019,Service account rotation,In Progress,High,Emma Johnson,Contoso Bank,2026-04-23,2026-05-28,,28,21,3,4,False,False,True
+MS-1020,Storage utilization cleanup,To Do,Low,Olivia Brown,Northwind Health,2026-05-14,2026-05-30,,10,0,18,24,False,False,False
+MS-1021,DR test evidence collection,Blocked,High,Sophia Lee,Adventure Works,2026-04-19,2026-05-09,,20,26,7,4,True,True,True
+MS-1022,HR application role mapping,In Progress,Medium,Ava Patel,Fabrikam Retail,2026-05-10,2026-05-26,,14,8,6,8,False,False,False
+MS-1023,SOC alert tuning request,Done,High,Noah Chen,Northwind Health,2026-04-27,2026-05-07,2026-05-07,12,13,4,4,False,False,False
+MS-1024,Legacy VM decommission,In Progress,Low,Mia Rodriguez,Contoso Bank,2026-04-12,2026-05-31,,18,12,20,24,False,False,False
+MS-1025,Production deployment readiness,In Review,Critical,Liam Smith,Adventure Works,2026-05-08,2026-05-18,,22,19,1,2,True,False,True
+MS-1026,Audit log retention update,To Do,Medium,Emma Johnson,Fabrikam Retail,2026-05-12,2026-05-25,,10,0,5,8,False,False,False
+MS-1027,Network latency investigation,Blocked,High,Olivia Brown,Northwind Health,2026-04-28,2026-05-12,,24,30,6,4,True,True,True
+MS-1028,Quarterly access certification,In Progress,Medium,Sophia Lee,Contoso Bank,2026-05-05,2026-05-27,,20,11,9,8,False,False,True
+MS-1029,Knowledge base article refresh,Done,Low,Ava Patel,Adventure Works,2026-05-01,2026-05-13,2026-05-13,5,4,16,24,False,False,False
+MS-1030,Critical vulnerability remediation,In Progress,Critical,Noah Chen,Fabrikam Retail,2026-05-02,2026-05-16,,32,34,1,2,True,False,True
