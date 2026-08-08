@@ -1,0 +1,3 @@
+# Local Supabase credentials — NEVER commit this file.
+# It holds your Project URL + anon key for running the app locally.
+config.js
