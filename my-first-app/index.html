@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- These two lines tell the browser how to read the file and how to size it on phones -->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My First App</title>
+
+  <!-- ============================================================
+       STYLING (CSS): this section controls how everything LOOKS.
+       Colors, fonts, spacing, the "modern" feel, etc.
+       ============================================================ -->
+  <style>
+    /* A "reset" so the page looks the same in every browser */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    /* The overall page: a soft gradient background, centered content */
+    body {
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+      padding: 20px;
+      color: #1f2937;
+    }
+
+    /* The white "card" that holds our content, floating in the middle */
+    .card {
+      background: #ffffff;
+      width: 100%;
+      max-width: 440px;
+      padding: 48px 40px;
+      border-radius: 20px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+      text-align: center;
+    }
+
+    /* The main heading */
+    h1 {
+      font-size: 32px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      color: #111827;
+    }
+
+    /* The welcome message under the heading */
+    .welcome {
+      font-size: 16px;
+      color: #6b7280;
+      line-height: 1.6;
+      margin-bottom: 32px;
+    }
+
+    /* Shared look for both buttons */
+    .btn {
+      background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+      color: #ffffff;
+      border: none;
+      font-size: 16px;
+      font-weight: 600;
+      padding: 14px 32px;
+      border-radius: 12px;
+      cursor: pointer;
+      width: 100%;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    /* A subtle lift effect when you hover over a button */
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(99, 102, 241, 0.4);
+    }
+
+    /* The form starts hidden; JavaScript will reveal it on click */
+    .form {
+      display: none;
+      margin-top: 8px;
+      text-align: left;
+    }
+
+    /* Each label + input group */
+    .field {
+      margin-bottom: 20px;
+    }
+
+    .field label {
+      display: block;
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: #374151;
+    }
+
+    .field input {
+      width: 100%;
+      padding: 12px 14px;
+      font-size: 15px;
+      border: 1px solid #d1d5db;
+      border-radius: 10px;
+      outline: none;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    /* Highlight the input box when it's selected */
+    .field input:focus {
+      border-color: #8b5cf6;
+      box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2);
+    }
+
+    /* The "thank you" message shown after submitting */
+    .success {
+      display: none;
+      margin-top: 24px;
+      padding: 16px;
+      background: #ecfdf5;
+      color: #065f46;
+      border-radius: 12px;
+      font-size: 15px;
+      font-weight: 500;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- ============================================================
+       STRUCTURE (HTML): this section is WHAT is on the page.
+       ============================================================ -->
+  <div class="card">
+    <h1>My First App</h1>
+    <p class="welcome">
+      Welcome! 👋 This is the very first app you've built.
+      Click the button below to get started.
+    </p>
+
+    <!-- The "Get Started" button -->
+    <button class="btn" id="getStartedBtn">Get Started</button>
+
+    <!-- The form: hidden until "Get Started" is clicked -->
+    <form class="form" id="signupForm">
+      <div class="field">
+        <label for="name">Name</label>
+        <input type="text" id="name" placeholder="Enter your name" required />
+      </div>
+
+      <div class="field">
+        <label for="email">Email</label>
+        <input type="email" id="email" placeholder="Enter your email" required />
+      </div>
+
+      <button type="submit" class="btn">Submit</button>
+    </form>
+
+    <!-- The confirmation message: hidden until the form is submitted -->
+    <div class="success" id="successMessage"></div>
+  </div>
+
+  <!-- ============================================================
+       BEHAVIOR (JavaScript): this section is what the page DOES.
+       ============================================================ -->
+  <script>
+    // Grab the pieces of the page we need to work with
+    const getStartedBtn = document.getElementById("getStartedBtn");
+    const signupForm = document.getElementById("signupForm");
+    const successMessage = document.getElementById("successMessage");
+
+    // When "Get Started" is clicked: hide the button, show the form
+    getStartedBtn.addEventListener("click", function () {
+      getStartedBtn.style.display = "none";
+      signupForm.style.display = "block";
+    });
+
+    // When the form is submitted: show a friendly thank-you message
+    signupForm.addEventListener("submit", function (event) {
+      // Stop the browser from reloading the page (its default behavior)
+      event.preventDefault();
+
+      // Read what the user typed
+      const name = document.getElementById("name").value;
+
+      // Hide the form and show the success message
+      signupForm.style.display = "none";
+      successMessage.style.display = "block";
+      successMessage.textContent = "Thank you, " + name + "! You're all set. 🎉";
+    });
+  </script>
+</body>
+</html>
