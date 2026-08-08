@@ -113,16 +113,52 @@
       box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2);
     }
 
-    /* The "thank you" message shown after submitting */
+    /* The "thank you" area shown after submitting */
     .success {
       display: none;
-      margin-top: 24px;
+      margin-top: 8px;
+      text-align: left;
+    }
+
+    /* The green thank-you banner at the top of the summary */
+    .success .banner {
       padding: 16px;
       background: #ecfdf5;
       color: #065f46;
       border-radius: 12px;
       font-size: 15px;
-      font-weight: 500;
+      font-weight: 600;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    /* Each saved detail row (label on the left, value on the right) */
+    .detail-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 12px 4px;
+      border-bottom: 1px solid #f3f4f6;
+      font-size: 15px;
+    }
+
+    .detail-row .detail-label {
+      color: #6b7280;
+      font-weight: 600;
+    }
+
+    .detail-row .detail-value {
+      color: #111827;
+    }
+
+    /* A softer, secondary-style button for "Start over" */
+    .btn-secondary {
+      background: #f3f4f6;
+      color: #374151;
+      margin-top: 24px;
+    }
+
+    .btn-secondary:hover {
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
     }
   </style>
 </head>
@@ -169,25 +205,90 @@
     const signupForm = document.getElementById("signupForm");
     const successMessage = document.getElementById("successMessage");
 
+    // The name of the "notepad entry" we'll save inside the browser
+    const STORAGE_KEY = "myFirstAppUser";
+
     // When "Get Started" is clicked: hide the button, show the form
     getStartedBtn.addEventListener("click", function () {
       getStartedBtn.style.display = "none";
       signupForm.style.display = "block";
     });
 
-    // When the form is submitted: show a friendly thank-you message
+    // When the form is submitted: save the details and show the summary
     signupForm.addEventListener("submit", function (event) {
       // Stop the browser from reloading the page (its default behavior)
       event.preventDefault();
 
       // Read what the user typed
       const name = document.getElementById("name").value;
+      const email = document.getElementById("email").value;
 
-      // Hide the form and show the success message
+      // Save it to the browser's built-in notepad (localStorage).
+      // We bundle the two values into one text string to store them together.
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({ name: name, email: email }));
+
+      // Show the saved details back to the user
+      showSummary(name, email);
+    });
+
+    // Builds and reveals the summary card with the saved details
+    function showSummary(name, email) {
+      getStartedBtn.style.display = "none";
       signupForm.style.display = "none";
       successMessage.style.display = "block";
-      successMessage.textContent = "Thank you, " + name + "! You're all set. 🎉";
-    });
+
+      // We build the summary out of safe pieces so typed text can't break the page
+      successMessage.innerHTML = "";
+
+      const banner = document.createElement("div");
+      banner.className = "banner";
+      banner.textContent = "Thank you, " + name + "! You're all set. 🎉";
+      successMessage.appendChild(banner);
+
+      successMessage.appendChild(makeDetailRow("Name", name));
+      successMessage.appendChild(makeDetailRow("Email", email));
+
+      // The "Start over" button clears the notepad and resets the app
+      const startOver = document.createElement("button");
+      startOver.className = "btn btn-secondary";
+      startOver.textContent = "Start over";
+      startOver.addEventListener("click", resetApp);
+      successMessage.appendChild(startOver);
+    }
+
+    // Helper that creates one "Label: value" row
+    function makeDetailRow(label, value) {
+      const row = document.createElement("div");
+      row.className = "detail-row";
+
+      const labelEl = document.createElement("span");
+      labelEl.className = "detail-label";
+      labelEl.textContent = label;
+
+      const valueEl = document.createElement("span");
+      valueEl.className = "detail-value";
+      valueEl.textContent = value;
+
+      row.appendChild(labelEl);
+      row.appendChild(valueEl);
+      return row;
+    }
+
+    // Wipes the saved data and returns to the very beginning
+    function resetApp() {
+      localStorage.removeItem(STORAGE_KEY);
+      signupForm.reset();
+      successMessage.style.display = "none";
+      getStartedBtn.style.display = "block";
+    }
+
+    // When the page first loads: if we saved someone earlier, show them again.
+    // This is what makes the app "remember you" after a refresh.
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+      const user = JSON.parse(saved);
+      showSummary(user.name, user.email);
+    }
   </script>
 </body>
 </html>

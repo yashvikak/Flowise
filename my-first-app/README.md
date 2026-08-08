@@ -7,7 +7,14 @@ No database, no accounts, no extra software to install — just one file.
 1. Shows a professional home page with a heading and welcome message.
 2. Has a **Get Started** button.
 3. Clicking **Get Started** reveals a short form (Name and Email).
-4. Clicking **Submit** shows a friendly thank-you message.
+4. Clicking **Submit** saves your details and shows them back in a summary card.
+5. The app **remembers you**: refresh or reopen the page and your details are
+   still there. A **Start over** button clears them and returns to the start.
+
+### How it "remembers" without a database
+It uses `localStorage` — a small notepad built into every web browser. Nothing
+is sent anywhere; the data stays only inside your own browser. No database, no
+server, no accounts, no extra software.
 
 ## How to preview it
 The easiest way — **just open the file**:
