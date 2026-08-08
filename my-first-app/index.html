@@ -160,6 +160,21 @@
     .btn-secondary:hover {
       box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
     }
+
+    /* A friendly red message shown under a field when something's wrong.
+       It starts hidden; JavaScript reveals it only when needed. */
+    .error-text {
+      display: none;
+      color: #dc2626;
+      font-size: 13px;
+      margin-top: 6px;
+    }
+
+    /* A red outline on an input box that has a problem */
+    .field input.invalid {
+      border-color: #dc2626;
+      box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.15);
+    }
   </style>
 </head>
 
@@ -177,16 +192,20 @@
     <!-- The "Get Started" button -->
     <button class="btn" id="getStartedBtn">Get Started</button>
 
-    <!-- The form: hidden until "Get Started" is clicked -->
-    <form class="form" id="signupForm">
+    <!-- The form: hidden until "Get Started" is clicked.
+         "novalidate" tells the browser to skip its own pop-up warnings,
+         so we can show our own friendlier messages instead. -->
+    <form class="form" id="signupForm" novalidate>
       <div class="field">
         <label for="name">Name</label>
-        <input type="text" id="name" placeholder="Enter your name" required />
+        <input type="text" id="name" placeholder="Enter your name" />
+        <span class="error-text" id="nameError">Please enter your name.</span>
       </div>
 
       <div class="field">
         <label for="email">Email</label>
-        <input type="email" id="email" placeholder="Enter your email" required />
+        <input type="email" id="email" placeholder="Enter your email" />
+        <span class="error-text" id="emailError">Please enter a valid email address.</span>
       </div>
 
       <button type="submit" class="btn">Submit</button>
@@ -214,21 +233,75 @@
       signupForm.style.display = "block";
     });
 
-    // When the form is submitted: save the details and show the summary
+    // Grab the input boxes and their error messages once, up front
+    const nameInput = document.getElementById("name");
+    const emailInput = document.getElementById("email");
+
+    // When the form is submitted: CHECK the input, then save if it's OK
     signupForm.addEventListener("submit", function (event) {
       // Stop the browser from reloading the page (its default behavior)
       event.preventDefault();
 
-      // Read what the user typed
-      const name = document.getElementById("name").value;
-      const email = document.getElementById("email").value;
+      // Read what the user typed. .trim() removes any accidental
+      // spaces at the start or end (so "  " counts as empty).
+      const name = nameInput.value.trim();
+      const email = emailInput.value.trim();
 
-      // Save it to the browser's built-in notepad (localStorage).
-      // We bundle the two values into one text string to store them together.
+      // We'll flip this to false if any check fails
+      let isValid = true;
+
+      // Rule 1: the name must not be empty
+      if (name === "") {
+        showError(nameInput, "nameError");
+        isValid = false;
+      } else {
+        clearError(nameInput, "nameError");
+      }
+
+      // Rule 2: the email must look like a real email address
+      if (!isValidEmail(email)) {
+        showError(emailInput, "emailError");
+        isValid = false;
+      } else {
+        clearError(emailInput, "emailError");
+      }
+
+      // If any check failed, stop here and let the user fix things
+      if (!isValid) {
+        return;
+      }
+
+      // All good — save it to the browser's built-in notepad (localStorage)
+      // and show the summary.
       localStorage.setItem(STORAGE_KEY, JSON.stringify({ name: name, email: email }));
-
-      // Show the saved details back to the user
       showSummary(name, email);
+    });
+
+    // Returns true only if the text looks like a valid email:
+    // some characters, then "@", then more characters, a "." and an ending.
+    function isValidEmail(text) {
+      const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      return pattern.test(text);
+    }
+
+    // Shows the red message and red border for a field
+    function showError(inputEl, errorId) {
+      inputEl.classList.add("invalid");
+      document.getElementById(errorId).style.display = "block";
+    }
+
+    // Hides the red message and red border for a field
+    function clearError(inputEl, errorId) {
+      inputEl.classList.remove("invalid");
+      document.getElementById(errorId).style.display = "none";
+    }
+
+    // As soon as the user starts fixing a field, remove its error message
+    nameInput.addEventListener("input", function () {
+      clearError(nameInput, "nameError");
+    });
+    emailInput.addEventListener("input", function () {
+      clearError(emailInput, "emailError");
     });
 
     // Builds and reveals the summary card with the saved details

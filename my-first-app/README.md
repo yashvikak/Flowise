@@ -10,6 +10,9 @@ No database, no accounts, no extra software to install — just one file.
 4. Clicking **Submit** saves your details and shows them back in a summary card.
 5. The app **remembers you**: refresh or reopen the page and your details are
    still there. A **Start over** button clears them and returns to the start.
+6. The form **checks your input** before saving: it asks for a name if the
+   field is empty, and a valid email address if the email looks wrong, showing
+   a friendly message under the field (no browser pop-ups).
 
 ### How it "remembers" without a database
 It uses `localStorage` — a small notepad built into every web browser. Nothing
