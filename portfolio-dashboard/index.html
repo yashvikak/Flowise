@@ -1,0 +1,1087 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Portfolio IQ — Intelligence Dashboard</title>
+
+  <!-- ============================================================
+       STYLING (CSS): the look and feel of the whole product.
+       Everything is driven by "design tokens" (the --variables in
+       :root) so colors and spacing stay consistent everywhere.
+       ============================================================ -->
+  <style>
+    :root {
+      /* Canvas & surfaces */
+      --bg: #f4f6f8;
+      --surface: #ffffff;
+      --surface-2: #f8fafc;
+      --border: #e6e9ee;
+      --border-strong: #d5dae2;
+
+      /* Text */
+      --text: #0f1729;
+      --text-muted: #64748b;
+      --text-subtle: #94a3b8;
+
+      /* Sidebar (deep slate) */
+      --sidebar-bg: #0f172a;
+      --sidebar-bg-2: #131c30;
+      --sidebar-text: #a9b4c4;
+      --sidebar-active-text: #ffffff;
+
+      /* Accent (configurable in Settings) */
+      --accent: #4f46e5;
+      --accent-soft: #eef2ff;
+
+      /* Status colors (Red / Amber / Green) */
+      --green: #15803d;  --green-bg: #dcfce7;
+      --amber: #b45309;  --amber-bg: #fef3c7;
+      --red:   #b91c1c;  --red-bg:   #fee2e2;
+      --critical: #9f1239; --critical-bg: #ffe4e6;
+
+      /* Shadows & radii */
+      --shadow-sm: 0 1px 2px rgba(16,24,40,.05);
+      --shadow: 0 1px 3px rgba(16,24,40,.08), 0 1px 2px rgba(16,24,40,.04);
+      --shadow-lg: 0 10px 30px rgba(16,24,40,.12);
+      --radius: 12px;
+      --radius-sm: 8px;
+
+      /* Spacing rhythm */
+      --pad: 24px;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html, body { height: 100%; }
+
+    body {
+      font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 14px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Numbers line up neatly in tables and KPIs */
+    .num { font-variant-numeric: tabular-nums; }
+
+    /* ---------- App shell: sidebar + main ---------- */
+    .app {
+      display: grid;
+      grid-template-columns: 248px 1fr;
+      min-height: 100vh;
+    }
+
+    /* ---------- Sidebar ---------- */
+    .sidebar {
+      background: linear-gradient(180deg, var(--sidebar-bg) 0%, var(--sidebar-bg-2) 100%);
+      color: var(--sidebar-text);
+      display: flex;
+      flex-direction: column;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      padding: 20px 14px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 6px 8px 20px;
+      border-bottom: 1px solid rgba(255,255,255,.07);
+      margin-bottom: 14px;
+    }
+    .brand .logo {
+      width: 38px; height: 38px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--accent) 0%, #8b5cf6 100%);
+      display: grid; place-items: center;
+      flex-shrink: 0;
+      box-shadow: 0 4px 12px rgba(79,70,229,.35);
+    }
+    .brand .name { color: #fff; font-weight: 700; font-size: 15px; letter-spacing: -.01em; }
+    .brand .tag { font-size: 11px; color: var(--text-subtle); }
+
+    .nav-label {
+      font-size: 10.5px; text-transform: uppercase; letter-spacing: .08em;
+      color: #5b6a82; padding: 12px 10px 6px; font-weight: 600;
+    }
+    .nav-item {
+      display: flex; align-items: center; gap: 11px;
+      padding: 9px 10px; border-radius: 9px;
+      color: var(--sidebar-text); cursor: pointer;
+      font-size: 13.5px; font-weight: 500;
+      transition: background .15s ease, color .15s ease;
+      user-select: none;
+      border: none; background: none; width: 100%; text-align: left;
+    }
+    .nav-item svg { width: 18px; height: 18px; flex-shrink: 0; opacity: .85; }
+    .nav-item:hover { background: rgba(255,255,255,.05); color: #e6ebf3; }
+    .nav-item.active {
+      background: rgba(99,102,241,.16);
+      color: var(--sidebar-active-text);
+      box-shadow: inset 3px 0 0 var(--accent);
+    }
+    .nav-item.active svg { opacity: 1; }
+
+    .sidebar-foot {
+      margin-top: auto;
+      padding: 12px 10px 4px;
+      border-top: 1px solid rgba(255,255,255,.07);
+      font-size: 11.5px; color: var(--text-subtle);
+    }
+
+    /* ---------- Main column ---------- */
+    .main { display: flex; flex-direction: column; min-width: 0; }
+
+    .topbar {
+      position: sticky; top: 0; z-index: 20;
+      background: rgba(255,255,255,.85);
+      backdrop-filter: saturate(1.4) blur(8px);
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px var(--pad);
+    }
+    .topbar h1 { font-size: 19px; font-weight: 700; letter-spacing: -.02em; }
+    .topbar .subtitle { font-size: 12.5px; color: var(--text-muted); margin-top: 1px; }
+    .topbar-right { display: flex; align-items: center; gap: 16px; }
+    .top-date { font-size: 12.5px; color: var(--text-muted); }
+    .avatar {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: var(--accent-soft); color: var(--accent);
+      display: grid; place-items: center; font-weight: 700; font-size: 13px;
+    }
+
+    .content { padding: var(--pad); }
+
+    /* ---------- Cards / panels ---------- */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-sm);
+    }
+    .card-head {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 18px; border-bottom: 1px solid var(--border);
+    }
+    .card-head h2 { font-size: 14.5px; font-weight: 650; letter-spacing: -.01em; }
+    .card-head .hint { font-size: 12px; color: var(--text-muted); }
+    .card-body { padding: 18px; }
+
+    .section-gap { margin-top: 22px; }
+    .grid { display: grid; gap: 18px; }
+
+    /* ---------- KPI stat tiles ---------- */
+    .kpi-row {
+      display: grid; gap: 16px;
+      grid-template-columns: repeat(6, 1fr);
+    }
+    .kpi {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px;
+      box-shadow: var(--shadow-sm);
+      display: flex; flex-direction: column; gap: 10px;
+      transition: box-shadow .15s ease, transform .15s ease, border-color .15s ease;
+    }
+    .kpi.clickable { cursor: pointer; }
+    .kpi.clickable:hover { box-shadow: var(--shadow); transform: translateY(-2px); border-color: var(--border-strong); }
+    .kpi-top { display: flex; align-items: center; justify-content: space-between; }
+    .kpi-icon { width: 34px; height: 34px; border-radius: 9px; display: grid; place-items: center; }
+    .kpi-icon svg { width: 18px; height: 18px; }
+    .kpi-label { font-size: 12px; color: var(--text-muted); font-weight: 500; }
+    .kpi-value { font-size: 26px; font-weight: 750; letter-spacing: -.02em; }
+    .kpi-sub { font-size: 11.5px; color: var(--text-subtle); }
+
+    .i-accent { background: var(--accent-soft); color: var(--accent); }
+    .i-green { background: var(--green-bg); color: var(--green); }
+    .i-amber { background: var(--amber-bg); color: var(--amber); }
+    .i-red { background: var(--red-bg); color: var(--red); }
+
+    /* ---------- Badges / status ---------- */
+    .badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 3px 10px; border-radius: 999px;
+      font-size: 12px; font-weight: 600; white-space: nowrap;
+    }
+    .badge .dot { width: 7px; height: 7px; border-radius: 50%; }
+    .b-green { background: var(--green-bg); color: var(--green); }
+    .b-green .dot { background: var(--green); }
+    .b-amber { background: var(--amber-bg); color: var(--amber); }
+    .b-amber .dot { background: var(--amber); }
+    .b-red { background: var(--red-bg); color: var(--red); }
+    .b-red .dot { background: var(--red); }
+    .b-critical { background: var(--critical-bg); color: var(--critical); }
+    .b-neutral { background: #eef1f5; color: var(--text-muted); }
+
+    /* ---------- Tables ---------- */
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    thead th {
+      text-align: left; font-weight: 600; color: var(--text-muted);
+      font-size: 11.5px; text-transform: uppercase; letter-spacing: .04em;
+      padding: 11px 16px; border-bottom: 1px solid var(--border);
+      background: var(--surface-2); white-space: nowrap;
+    }
+    tbody td { padding: 13px 16px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+    tbody tr { transition: background .12s ease; }
+    tbody tr.row-click { cursor: pointer; }
+    tbody tr.row-click:hover { background: var(--accent-soft); }
+    tbody tr:last-child td { border-bottom: none; }
+    .t-strong { font-weight: 600; color: var(--text); }
+    .t-right { text-align: right; }
+
+    body.compact tbody td { padding: 8px 16px; }
+    body.compact thead th { padding: 8px 16px; }
+    body.compact .card-body { padding: 14px; }
+
+    /* progress bar inside % complete */
+    .progress { display: flex; align-items: center; gap: 9px; min-width: 120px; }
+    .progress .track { flex: 1; height: 7px; background: #eceff3; border-radius: 999px; overflow: hidden; }
+    .progress .fill { height: 100%; border-radius: 999px; background: var(--accent); }
+    .progress .pct { font-size: 12px; color: var(--text-muted); width: 34px; text-align: right; }
+
+    /* ---------- Donut (portfolio health) ---------- */
+    .donut-wrap { display: flex; align-items: center; gap: 26px; flex-wrap: wrap; }
+    .donut {
+      width: 168px; height: 168px; border-radius: 50%;
+      display: grid; place-items: center; flex-shrink: 0;
+    }
+    .donut .hole {
+      width: 108px; height: 108px; border-radius: 50%;
+      background: var(--surface); display: grid; place-items: center; text-align: center;
+    }
+    .donut .hole .big { font-size: 30px; font-weight: 750; }
+    .donut .hole .small { font-size: 11px; color: var(--text-muted); }
+    .legend { display: flex; flex-direction: column; gap: 12px; }
+    .legend-item { display: flex; align-items: center; gap: 10px; font-size: 13px; }
+    .legend-item .sw { width: 11px; height: 11px; border-radius: 3px; }
+    .legend-item .lg-count { margin-left: auto; font-weight: 700; }
+    .legend-item .lg-name { color: var(--text-muted); }
+
+    /* ---------- Financial bars ---------- */
+    .fin-row { padding: 12px 0; border-bottom: 1px solid var(--border); }
+    .fin-row:last-child { border-bottom: none; }
+    .fin-head { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 8px; }
+    .fin-name { font-weight: 600; }
+    .fin-figs { color: var(--text-muted); }
+    .bar-group { display: flex; flex-direction: column; gap: 5px; }
+    .bar { height: 9px; border-radius: 999px; background: #eceff3; position: relative; overflow: hidden; }
+    .bar > span { position: absolute; left: 0; top: 0; height: 100%; border-radius: 999px; }
+    .bar-budget > span { background: #c7cdf7; }
+    .bar-actual > span { background: var(--accent); }
+    .bar-legend { display: flex; gap: 18px; font-size: 11.5px; color: var(--text-muted); margin-bottom: 14px; }
+    .bar-legend .k { display: inline-flex; align-items: center; gap: 6px; }
+    .bar-legend .k i { width: 10px; height: 10px; border-radius: 3px; display: inline-block; }
+
+    /* ---------- Risk / milestone lists ---------- */
+    .list-item { display: flex; gap: 12px; padding: 13px 0; border-bottom: 1px solid var(--border); }
+    .list-item:last-child { border-bottom: none; }
+    .risk-rank {
+      width: 26px; height: 26px; border-radius: 7px; flex-shrink: 0;
+      display: grid; place-items: center; font-weight: 700; font-size: 12px;
+      background: var(--surface-2); color: var(--text-muted); border: 1px solid var(--border);
+    }
+    .list-main { flex: 1; min-width: 0; }
+    .list-title { font-weight: 600; font-size: 13.5px; }
+    .list-meta { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+    .list-right { text-align: right; flex-shrink: 0; }
+
+    .mile-date {
+      width: 52px; flex-shrink: 0; text-align: center;
+      border: 1px solid var(--border); border-radius: 8px; overflow: hidden;
+    }
+    .mile-date .m { font-size: 10px; text-transform: uppercase; letter-spacing: .04em; background: var(--surface-2); color: var(--text-muted); padding: 2px 0; }
+    .mile-date .d { font-size: 17px; font-weight: 700; padding: 3px 0; }
+
+    /* ---------- Toolbar (search + filters) ---------- */
+    .toolbar { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }
+    .search {
+      display: flex; align-items: center; gap: 8px;
+      background: var(--surface); border: 1px solid var(--border-strong);
+      border-radius: 9px; padding: 8px 12px; min-width: 260px;
+    }
+    .search input { border: none; outline: none; font-size: 13.5px; width: 100%; background: none; color: var(--text); }
+    .search svg { width: 16px; height: 16px; color: var(--text-subtle); }
+    .chips { display: flex; gap: 8px; flex-wrap: wrap; }
+    .chip {
+      padding: 7px 13px; border-radius: 999px; font-size: 12.5px; font-weight: 600;
+      border: 1px solid var(--border-strong); background: var(--surface); color: var(--text-muted);
+      cursor: pointer; transition: all .12s ease;
+    }
+    .chip:hover { border-color: var(--accent); color: var(--accent); }
+    .chip.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+    /* ---------- Project cards (Projects view) ---------- */
+    .proj-grid { display: grid; gap: 16px; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); }
+    .proj-card {
+      background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 16px; box-shadow: var(--shadow-sm); cursor: pointer;
+      transition: box-shadow .15s ease, transform .15s ease, border-color .15s ease;
+    }
+    .proj-card:hover { box-shadow: var(--shadow); transform: translateY(-2px); border-color: var(--border-strong); }
+    .proj-card .pc-top { display: flex; justify-content: space-between; align-items: start; gap: 10px; margin-bottom: 12px; }
+    .proj-card .pc-name { font-weight: 650; font-size: 14.5px; letter-spacing: -.01em; }
+    .proj-card .pc-meta { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+    .pc-figs { display: flex; justify-content: space-between; margin-top: 14px; font-size: 12.5px; }
+    .pc-figs .lab { color: var(--text-subtle); font-size: 11px; }
+    .pc-figs .val { font-weight: 650; }
+
+    /* ---------- Modal / drawer ---------- */
+    .overlay {
+      position: fixed; inset: 0; background: rgba(15,23,42,.45);
+      display: none; align-items: stretch; justify-content: flex-end; z-index: 100;
+    }
+    .overlay.open { display: flex; }
+    .drawer {
+      width: 460px; max-width: 92vw; background: var(--surface);
+      height: 100%; overflow-y: auto; box-shadow: var(--shadow-lg);
+      animation: slideIn .22s ease;
+    }
+    @keyframes slideIn { from { transform: translateX(30px); opacity: .6; } to { transform: translateX(0); opacity: 1; } }
+    .drawer-head { padding: 20px 22px; border-bottom: 1px solid var(--border); position: sticky; top: 0; background: var(--surface); }
+    .drawer-head .x { float: right; cursor: pointer; color: var(--text-subtle); font-size: 22px; line-height: 1; border: none; background: none; }
+    .drawer-body { padding: 22px; }
+    .dl { display: grid; grid-template-columns: 1fr 1fr; gap: 16px 20px; margin: 4px 0 20px; }
+    .dl .k { font-size: 11px; text-transform: uppercase; letter-spacing: .04em; color: var(--text-subtle); }
+    .dl .v { font-size: 14px; font-weight: 600; margin-top: 3px; }
+    .drawer h3 { font-size: 12px; text-transform: uppercase; letter-spacing: .05em; color: var(--text-muted); margin: 20px 0 10px; }
+
+    /* ---------- Settings ---------- */
+    .set-row { display: flex; align-items: center; justify-content: space-between; padding: 16px 0; border-bottom: 1px solid var(--border); }
+    .set-row:last-child { border-bottom: none; }
+    .set-label { font-weight: 600; font-size: 13.5px; }
+    .set-desc { font-size: 12.5px; color: var(--text-muted); margin-top: 2px; max-width: 420px; }
+    .set-input { padding: 9px 12px; border: 1px solid var(--border-strong); border-radius: 8px; font-size: 13.5px; min-width: 220px; color: var(--text); background: var(--surface); }
+    .swatches { display: flex; gap: 10px; }
+    .swatch { width: 30px; height: 30px; border-radius: 8px; cursor: pointer; border: 2px solid transparent; }
+    .swatch.active { border-color: var(--text); box-shadow: 0 0 0 2px var(--surface) inset; }
+    .seg { display: inline-flex; border: 1px solid var(--border-strong); border-radius: 8px; overflow: hidden; }
+    .seg button { border: none; background: var(--surface); padding: 8px 16px; font-size: 13px; cursor: pointer; color: var(--text-muted); font-weight: 600; }
+    .seg button.active { background: var(--accent); color: #fff; }
+
+    /* ---------- Report cards ---------- */
+    .report-grid { display: grid; gap: 16px; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
+    .report-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px; box-shadow: var(--shadow-sm); }
+    .report-card .rc-icon { width: 40px; height: 40px; border-radius: 10px; display: grid; place-items: center; margin-bottom: 12px; }
+    .report-card h3 { font-size: 14.5px; font-weight: 650; }
+    .report-card p { font-size: 12.5px; color: var(--text-muted); margin: 5px 0 14px; }
+    .btn {
+      display: inline-flex; align-items: center; gap: 7px; justify-content: center;
+      padding: 8px 14px; border-radius: 8px; font-size: 13px; font-weight: 600;
+      border: 1px solid var(--border-strong); background: var(--surface); color: var(--text);
+      cursor: pointer; transition: all .12s ease;
+    }
+    .btn:hover { border-color: var(--accent); color: var(--accent); }
+    .btn-primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+    .btn-primary:hover { filter: brightness(1.07); color: #fff; }
+    .btn svg { width: 15px; height: 15px; }
+
+    .muted { color: var(--text-muted); }
+    .flex { display: flex; }
+    .between { justify-content: space-between; }
+    .items-center { align-items: center; }
+
+    /* ---------- Responsive ---------- */
+    @media (max-width: 1100px) {
+      .kpi-row { grid-template-columns: repeat(3, 1fr); }
+    }
+    @media (max-width: 900px) {
+      .app { grid-template-columns: 1fr; }
+      .sidebar { position: static; height: auto; flex-direction: column; }
+      .nav { display: grid; grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 620px) {
+      .kpi-row { grid-template-columns: repeat(2, 1fr); }
+      .drawer { width: 100%; }
+    }
+
+    /* Two-column dashboard layout */
+    .cols-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+    @media (max-width: 980px) { .cols-2 { grid-template-columns: 1fr; } }
+
+    /* Printing (used by Reports) */
+    @media print {
+      .sidebar, .topbar, .toolbar, .no-print { display: none !important; }
+      .app { grid-template-columns: 1fr; }
+      .content { padding: 0; }
+      .card { box-shadow: none; break-inside: avoid; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="app">
+    <!-- ============================ SIDEBAR ============================ -->
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="logo">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 3v18h18"/><path d="M7 15l3-4 3 2 4-6"/>
+          </svg>
+        </div>
+        <div>
+          <div class="name">Portfolio IQ</div>
+          <div class="tag">Intelligence Dashboard</div>
+        </div>
+      </div>
+
+      <div class="nav-label">Menu</div>
+      <nav class="nav" id="nav"><!-- nav items injected by JS --></nav>
+
+      <div class="sidebar-foot">
+        <div id="footOrg">Northwind Industries</div>
+        <div style="margin-top:3px;">Portfolio PMO · FY2026</div>
+      </div>
+    </aside>
+
+    <!-- ============================ MAIN ============================ -->
+    <div class="main">
+      <header class="topbar">
+        <div>
+          <h1 id="pageTitle">Executive Dashboard</h1>
+          <div class="subtitle" id="pageSubtitle">Portfolio performance at a glance</div>
+        </div>
+        <div class="topbar-right">
+          <div class="top-date" id="topDate"></div>
+          <div class="avatar">PP</div>
+        </div>
+      </header>
+
+      <main class="content" id="viewRoot"><!-- current view injected here --></main>
+    </div>
+  </div>
+
+  <!-- Slide-in detail drawer (project details) -->
+  <div class="overlay" id="overlay">
+    <div class="drawer" id="drawer"></div>
+  </div>
+
+  <!-- ============================================================
+       BEHAVIOR (JavaScript): the "brain". It holds the sample data
+       and builds every screen from it.
+       ============================================================ -->
+  <script>
+  /* =========================================================
+     1) SAMPLE DATA  — the single source of truth.
+        In a real product this would come from a server; here it
+        is just lists of information living inside the file.
+     ========================================================= */
+
+  // A fixed "today" so the demo always shows a consistent 90-day window.
+  const REFERENCE_DATE = new Date(2026, 7, 8); // 8 Aug 2026 (month is 0-based)
+
+  const PROJECTS = [
+    { id: 1, name: "Customer Portal Revamp", pm: "Sarah Chen", bu: "Digital & eCommerce", status: "On Track", complete: 72, budget: 1200000, actual: 860000, target: "2026-11-15" },
+    { id: 2, name: "ERP Cloud Migration", pm: "Michael Torres", bu: "Enterprise IT", status: "At Risk", complete: 45, budget: 3500000, actual: 2100000, target: "2027-02-28" },
+    { id: 3, name: "Mobile Banking App 2.0", pm: "Priya Nair", bu: "Retail Banking", status: "On Track", complete: 88, budget: 2000000, actual: 1750000, target: "2026-09-30" },
+    { id: 4, name: "Data Lake Modernization", pm: "David Okafor", bu: "Data & Analytics", status: "Delayed", complete: 30, budget: 2800000, actual: 1950000, target: "2026-10-20" },
+    { id: 5, name: "Cybersecurity Uplift Program", pm: "Elena Volkov", bu: "Information Security", status: "At Risk", complete: 60, budget: 1600000, actual: 1120000, target: "2026-12-10" },
+    { id: 6, name: "Warehouse Automation Rollout", pm: "James Whitfield", bu: "Supply Chain", status: "On Track", complete: 54, budget: 4200000, actual: 2050000, target: "2027-04-15" },
+    { id: 7, name: "HR Systems Consolidation", pm: "Aisha Rahman", bu: "People & Culture", status: "Delayed", complete: 22, budget: 950000, actual: 700000, target: "2026-09-05" },
+    { id: 8, name: "Marketing Analytics Platform", pm: "Tom Bradley", bu: "Marketing", status: "On Track", complete: 66, budget: 1100000, actual: 640000, target: "2026-12-01" }
+  ];
+
+  const RISKS = [
+    { title: "ERP data migration integrity failure", project: "ERP Cloud Migration", owner: "Michael Torres", severity: "Critical", likelihood: "High", impact: "High", score: 25, status: "Open" },
+    { title: "Data Lake cost overrun exceeds contingency", project: "Data Lake Modernization", owner: "David Okafor", severity: "Critical", likelihood: "High", impact: "High", score: 24, status: "Open" },
+    { title: "Security control gaps in legacy systems", project: "Cybersecurity Uplift Program", owner: "Elena Volkov", severity: "High", likelihood: "High", impact: "Medium", score: 20, status: "Mitigating" },
+    { title: "Regulatory compliance deadline slip", project: "Mobile Banking App 2.0", owner: "Priya Nair", severity: "High", likelihood: "Medium", impact: "High", score: 18, status: "Open" },
+    { title: "Key automation vendor resourcing shortfall", project: "Warehouse Automation Rollout", owner: "James Whitfield", severity: "High", likelihood: "Medium", impact: "Medium", score: 15, status: "Mitigating" },
+    { title: "HR data privacy exposure during cutover", project: "HR Systems Consolidation", owner: "Aisha Rahman", severity: "Medium", likelihood: "Medium", impact: "Medium", score: 12, status: "Open" }
+  ];
+
+  const MILESTONES = [
+    { date: "2026-08-25", project: "Mobile Banking App 2.0", name: "UAT Sign-off", owner: "Priya Nair" },
+    { date: "2026-09-05", project: "HR Systems Consolidation", name: "Payroll Cutover", owner: "Aisha Rahman" },
+    { date: "2026-09-18", project: "Customer Portal Revamp", name: "Phase 2 Go-Live", owner: "Sarah Chen" },
+    { date: "2026-10-02", project: "Cybersecurity Uplift Program", name: "Penetration Test Completion", owner: "Elena Volkov" },
+    { date: "2026-10-15", project: "Marketing Analytics Platform", name: "Beta Launch", owner: "Tom Bradley" },
+    { date: "2026-10-28", project: "ERP Cloud Migration", name: "Finance Module Pilot", owner: "Michael Torres" },
+    { date: "2026-11-03", project: "Data Lake Modernization", name: "Ingestion Framework Delivery", owner: "David Okafor" }
+  ];
+
+  /* =========================================================
+     2) SETTINGS  — small preferences saved in the browser.
+     ========================================================= */
+  const ACCENTS = {
+    indigo: { color: "#4f46e5", soft: "#eef2ff" },
+    blue:   { color: "#2563eb", soft: "#eff6ff" },
+    teal:   { color: "#0d9488", soft: "#f0fdfa" },
+    violet: { color: "#7c3aed", soft: "#f5f3ff" }
+  };
+  const DEFAULT_SETTINGS = { org: "Northwind Industries", accent: "indigo", density: "comfortable" };
+
+  function loadSettings() {
+    try {
+      const saved = JSON.parse(localStorage.getItem("piqSettings"));
+      return Object.assign({}, DEFAULT_SETTINGS, saved || {});
+    } catch (e) { return Object.assign({}, DEFAULT_SETTINGS); }
+  }
+  function saveSettings(s) {
+    try { localStorage.setItem("piqSettings", JSON.stringify(s)); } catch (e) { /* ignore */ }
+  }
+  let settings = loadSettings();
+
+  function applySettings() {
+    const a = ACCENTS[settings.accent] || ACCENTS.indigo;
+    document.documentElement.style.setProperty("--accent", a.color);
+    document.documentElement.style.setProperty("--accent-soft", a.soft);
+    document.body.classList.toggle("compact", settings.density === "compact");
+    document.getElementById("footOrg").textContent = settings.org;
+  }
+
+  /* =========================================================
+     3) SMALL HELPERS  — formatting & calculations.
+     ========================================================= */
+  const money = v => "$" + v.toLocaleString("en-US");
+  function moneyC(v) {
+    if (v >= 1e9) return "$" + (v / 1e9).toFixed(2) + "B";
+    if (v >= 1e6) return "$" + (v / 1e6).toFixed(2) + "M";
+    if (v >= 1e3) return "$" + Math.round(v / 1e3) + "K";
+    return "$" + v;
+  }
+  const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  function parseDate(s) { const p = s.split("-"); return new Date(+p[0], +p[1] - 1, +p[2]); }
+  function fmtDate(s) { const d = parseDate(s); return d.getDate() + " " + MONTHS[d.getMonth()] + " " + d.getFullYear(); }
+  function daysFromRef(s) { return Math.round((parseDate(s) - REFERENCE_DATE) / 86400000); }
+
+  // Map a status to its RAG (Red/Amber/Green) badge class
+  function statusBadge(status) {
+    const map = { "On Track": "b-green", "At Risk": "b-amber", "Delayed": "b-red" };
+    return '<span class="badge ' + (map[status] || "b-neutral") + '"><span class="dot"></span>' + status + "</span>";
+  }
+  function severityBadge(sev) {
+    const map = { "Critical": "b-critical", "High": "b-red", "Medium": "b-amber", "Low": "b-green" };
+    return '<span class="badge ' + (map[sev] || "b-neutral") + '">' + sev + "</span>";
+  }
+  // Escape user-entered text (e.g. org name) before putting it on the page
+  function esc(s) { return String(s).replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;" }[c])); }
+
+  // Portfolio-wide numbers, computed from the data (never hand-typed)
+  function portfolioStats() {
+    const total = PROJECTS.length;
+    const onTrack = PROJECTS.filter(p => p.status === "On Track").length;
+    const atRisk = PROJECTS.filter(p => p.status === "At Risk").length;
+    const delayed = PROJECTS.filter(p => p.status === "Delayed").length;
+    const budget = PROJECTS.reduce((s, p) => s + p.budget, 0);
+    const actual = PROJECTS.reduce((s, p) => s + p.actual, 0);
+    return { total, onTrack, atRisk, delayed, budget, actual };
+  }
+
+  /* =========================================================
+     4) ICONS  — small inline SVGs (no icon library needed).
+     ========================================================= */
+  const ICONS = {
+    dashboard: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>',
+    portfolio: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h18v12H3z"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>',
+    projects: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v4H4z"/><path d="M4 12h16"/><path d="M4 12v8h16v-8"/><path d="M9 16h6"/></svg>',
+    risks: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l9 16H3z"/><path d="M12 10v4"/><path d="M12 17h.01"/></svg>',
+    financials: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20"/><path d="M17 6H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>',
+    reports: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2h9l5 5v15H6z"/><path d="M14 2v6h6"/><path d="M9 13h6M9 17h6"/></svg>',
+    settings: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-2.7 1.1V21a2 2 0 0 1-4 0v-.1A1.6 1.6 0 0 0 7 19.4a1.6 1.6 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0-1.1-2.7H1a2 2 0 0 1 0-4h.1A1.6 1.6 0 0 0 2.6 7a1.6 1.6 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.6 1.6 0 0 0 1.8.3H7a1.6 1.6 0 0 0 1-1.5V1a2 2 0 0 1 4 0v.1a1.6 1.6 0 0 0 2.7 1.1 1.6 1.6 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0-.3 1.8V7a1.6 1.6 0 0 0 1.5 1H23a2 2 0 0 1 0 4h-.1a1.6 1.6 0 0 0-1.5 1z"/></svg>',
+    dollar: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20"/><path d="M17 6H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>',
+    check: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>',
+    warn: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4M12 17h.01"/><circle cx="12" cy="12" r="9"/></svg>',
+    clock: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>',
+    folder: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h6l2 2h10v10H3z"/></svg>',
+    wallet: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="14" rx="2"/><path d="M3 10h18"/></svg>',
+    search: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg>',
+    print: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>'
+  };
+
+  /* =========================================================
+     5) NAVIGATION  — the menu and the router that swaps views.
+     ========================================================= */
+  const NAV = [
+    { key: "dashboard", label: "Dashboard", icon: ICONS.dashboard, title: "Executive Dashboard", subtitle: "Portfolio performance at a glance" },
+    { key: "portfolio", label: "Portfolio", icon: ICONS.portfolio, title: "Portfolio Overview", subtitle: "Health, budget and project register" },
+    { key: "projects", label: "Projects", icon: ICONS.projects, title: "Projects", subtitle: "Search and explore all initiatives" },
+    { key: "risks", label: "Risks & Issues", icon: ICONS.risks, title: "Risks & Issues", subtitle: "Portfolio risk register" },
+    { key: "financials", label: "Financials", icon: ICONS.financials, title: "Financial Overview", subtitle: "Budget vs actual spend" },
+    { key: "reports", label: "Reports", icon: ICONS.reports, title: "Reports", subtitle: "Generate and export portfolio reports" },
+    { key: "settings", label: "Settings", icon: ICONS.settings, title: "Settings", subtitle: "Personalize your workspace" }
+  ];
+
+  let currentView = "dashboard";
+  let projectFilter = "All";   // used by the Projects view
+  let projectSearch = "";
+
+  function buildNav() {
+    document.getElementById("nav").innerHTML = NAV.map(n =>
+      '<button class="nav-item" data-view="' + n.key + '">' + n.icon + "<span>" + n.label + "</span></button>"
+    ).join("");
+    document.querySelectorAll(".nav-item").forEach(el =>
+      el.addEventListener("click", () => navigate(el.dataset.view))
+    );
+  }
+
+  function navigate(view) {
+    currentView = view;
+    const meta = NAV.find(n => n.key === view);
+    document.getElementById("pageTitle").textContent = meta.title;
+    document.getElementById("pageSubtitle").textContent = meta.subtitle;
+    document.querySelectorAll(".nav-item").forEach(el =>
+      el.classList.toggle("active", el.dataset.view === view)
+    );
+    render();
+    document.querySelector(".content").scrollTop = 0;
+    window.scrollTo(0, 0);
+  }
+
+  /* =========================================================
+     6) THE VIEWS  — each returns the HTML for one screen.
+     ========================================================= */
+  function render() {
+    const root = document.getElementById("viewRoot");
+    const views = {
+      dashboard: viewDashboard,
+      portfolio: viewPortfolio,
+      projects: viewProjects,
+      risks: viewRisks,
+      financials: viewFinancials,
+      reports: viewReports,
+      settings: viewSettings
+    };
+    root.innerHTML = (views[currentView] || viewDashboard)();
+    if (currentView === "projects") wireProjects();
+    if (currentView === "settings") wireSettings();
+    if (currentView === "reports") wireReports();
+    wireRowClicks();
+  }
+
+  /* ---- KPI tiles ---- */
+  function kpiTile(icon, iconClass, label, value, sub, clickView, clickFilter) {
+    const click = clickView ? ' data-goview="' + clickView + '" data-gofilter="' + (clickFilter || "") + '"' : "";
+    return '<div class="kpi ' + (clickView ? "clickable" : "") + '"' + click + '>' +
+        '<div class="kpi-top"><span class="kpi-label">' + label + '</span>' +
+        '<span class="kpi-icon ' + iconClass + '">' + icon + '</span></div>' +
+        '<div class="kpi-value num">' + value + '</div>' +
+        '<div class="kpi-sub">' + sub + '</div></div>';
+  }
+
+  function viewDashboard() {
+    const s = portfolioStats();
+    const spendPct = Math.round(s.actual / s.budget * 100);
+    return '' +
+      '<div class="kpi-row">' +
+        kpiTile(ICONS.folder, "i-accent", "Total Projects", s.total, "Active initiatives", "projects", "All") +
+        kpiTile(ICONS.check, "i-green", "On Track", s.onTrack, "Healthy delivery", "projects", "On Track") +
+        kpiTile(ICONS.warn, "i-amber", "At Risk", s.atRisk, "Need attention", "projects", "At Risk") +
+        kpiTile(ICONS.warn, "i-red", "Delayed", s.delayed, "Behind schedule", "projects", "Delayed") +
+        kpiTile(ICONS.wallet, "i-accent", "Portfolio Budget", moneyC(s.budget), "Total approved", "financials", "") +
+        kpiTile(ICONS.dollar, "i-accent", "Actual Spend", moneyC(s.actual), spendPct + "% of budget", "financials", "") +
+      '</div>' +
+
+      '<div class="cols-2 section-gap">' +
+        healthCard() +
+        financialCard(4) +
+      '</div>' +
+
+      '<div class="cols-2 section-gap">' +
+        risksCard(5) +
+        milestonesCard() +
+      '</div>';
+  }
+
+  /* ---- Portfolio Health donut ---- */
+  function healthCard() {
+    const s = portfolioStats();
+    const g = s.onTrack, a = s.atRisk, r = s.delayed, total = s.total;
+    const gp = g / total * 100, ap = a / total * 100;
+    const gEnd = gp, aEnd = gp + ap;
+    const gradient = "conic-gradient(var(--green) 0 " + gEnd + "%, var(--amber) " + gEnd + "% " + aEnd + "%, var(--red) " + aEnd + "% 100%)";
+    const healthy = Math.round(g / total * 100);
+    return '<div class="card"><div class="card-head"><h2>Portfolio Health</h2>' +
+      '<span class="hint">RAG status</span></div><div class="card-body">' +
+      '<div class="donut-wrap">' +
+        '<div class="donut" style="background:' + gradient + '"><div class="hole">' +
+          '<div><div class="big num">' + healthy + '%</div><div class="small">On Track</div></div>' +
+        '</div></div>' +
+        '<div class="legend">' +
+          legendItem("var(--green)", "On Track", g, total) +
+          legendItem("var(--amber)", "At Risk", a, total) +
+          legendItem("var(--red)", "Delayed", r, total) +
+        '</div>' +
+      '</div></div></div>';
+  }
+  function legendItem(color, name, count, total) {
+    const pct = Math.round(count / total * 100);
+    return '<div class="legend-item"><span class="sw" style="background:' + color + '"></span>' +
+      '<span class="lg-name">' + name + '</span>' +
+      '<span class="lg-count num">' + count + ' <span class="muted" style="font-weight:500">(' + pct + '%)</span></span></div>';
+  }
+
+  /* ---- Financial overview (budget vs actual bars) ---- */
+  function financialCard(limit) {
+    const s = portfolioStats();
+    const rows = PROJECTS.slice().sort((a, b) => b.budget - a.budget);
+    const shown = limit ? rows.slice(0, limit) : rows;
+    const maxB = Math.max.apply(null, PROJECTS.map(p => p.budget));
+    const bars = shown.map(p => {
+      const bw = p.budget / maxB * 100, aw = p.actual / maxB * 100;
+      return '<div class="fin-row"><div class="fin-head">' +
+        '<span class="fin-name">' + p.name + '</span>' +
+        '<span class="fin-figs num">' + moneyC(p.actual) + ' / ' + moneyC(p.budget) + '</span></div>' +
+        '<div class="bar-group">' +
+          '<div class="bar bar-budget"><span style="width:' + bw + '%"></span></div>' +
+          '<div class="bar bar-actual"><span style="width:' + aw + '%"></span></div>' +
+        '</div></div>';
+    }).join("");
+    const hint = limit ? '<span class="hint">Top ' + limit + ' by budget</span>' : '<span class="hint">' + moneyC(s.actual) + ' of ' + moneyC(s.budget) + '</span>';
+    return '<div class="card"><div class="card-head"><h2>Financial Overview</h2>' + hint + '</div>' +
+      '<div class="card-body">' +
+      '<div class="bar-legend"><span class="k"><i style="background:#c7cdf7"></i>Budget</span>' +
+      '<span class="k"><i style="background:var(--accent)"></i>Actual Spend</span></div>' +
+      bars + '</div></div>';
+  }
+
+  /* ---- Top risks ---- */
+  function risksCard(limit) {
+    const rows = RISKS.slice().sort((a, b) => b.score - a.score).slice(0, limit);
+    const items = rows.map((r, i) =>
+      '<div class="list-item"><div class="risk-rank">' + (i + 1) + '</div>' +
+      '<div class="list-main"><div class="list-title">' + r.title + '</div>' +
+      '<div class="list-meta">' + r.project + ' · Owner: ' + r.owner + '</div></div>' +
+      '<div class="list-right">' + severityBadge(r.severity) +
+      '<div class="list-meta" style="margin-top:6px">Likelihood: ' + r.likelihood + '</div></div></div>'
+    ).join("");
+    return '<div class="card"><div class="card-head"><h2>Top Risks</h2>' +
+      '<span class="hint">Highest priority</span></div><div class="card-body" style="padding-top:4px">' + items + '</div></div>';
+  }
+
+  /* ---- Upcoming milestones ---- */
+  function milestonesCard() {
+    const rows = MILESTONES
+      .map(m => Object.assign({}, m, { days: daysFromRef(m.date) }))
+      .filter(m => m.days >= 0 && m.days <= 90)
+      .sort((a, b) => a.days - b.days);
+    const items = rows.map(m => {
+      const d = parseDate(m.date);
+      return '<div class="list-item"><div class="mile-date"><div class="m">' + MONTHS[d.getMonth()] + '</div>' +
+        '<div class="d num">' + d.getDate() + '</div></div>' +
+        '<div class="list-main"><div class="list-title">' + m.name + '</div>' +
+        '<div class="list-meta">' + m.project + '</div></div>' +
+        '<div class="list-right"><span class="badge b-neutral num">in ' + m.days + 'd</span></div></div>';
+    }).join("");
+    return '<div class="card"><div class="card-head"><h2>Upcoming Milestones</h2>' +
+      '<span class="hint">Next 90 days</span></div><div class="card-body" style="padding-top:4px">' + items + '</div></div>';
+  }
+
+  /* ---- The project register table ---- */
+  function projectTable(list) {
+    const rows = list.map(p =>
+      '<tr class="row-click" data-pid="' + p.id + '">' +
+        '<td class="t-strong">' + p.name + '</td>' +
+        '<td>' + p.pm + '</td>' +
+        '<td>' + p.bu + '</td>' +
+        '<td>' + statusBadge(p.status) + '</td>' +
+        '<td><div class="progress"><div class="track"><div class="fill" style="width:' + p.complete + '%"></div></div>' +
+          '<span class="pct num">' + p.complete + '%</span></div></td>' +
+        '<td class="t-right num">' + money(p.budget) + '</td>' +
+        '<td class="t-right num">' + money(p.actual) + '</td>' +
+        '<td class="num">' + fmtDate(p.target) + '</td>' +
+      '</tr>'
+    ).join("");
+    return '<div class="table-wrap"><table><thead><tr>' +
+      '<th>Project Name</th><th>Project Manager</th><th>Business Unit</th><th>Status</th>' +
+      '<th>% Complete</th><th class="t-right">Budget</th><th class="t-right">Actual Spend</th><th>Target Completion</th>' +
+      '</tr></thead><tbody>' + rows + '</tbody></table></div>';
+  }
+
+  function viewPortfolio() {
+    return '<div class="cols-2">' + healthCard() + financialCard(4) + '</div>' +
+      '<div class="card section-gap"><div class="card-head"><h2>Project Portfolio</h2>' +
+      '<span class="hint">' + PROJECTS.length + ' projects</span></div>' +
+      projectTable(PROJECTS) + '</div>';
+  }
+
+  function viewProjects() {
+    const chips = ["All", "On Track", "At Risk", "Delayed"].map(c =>
+      '<button class="chip ' + (projectFilter === c ? "active" : "") + '" data-filter="' + c + '">' + c + '</button>'
+    ).join("");
+    return '<div class="toolbar no-print">' +
+        '<div class="search">' + ICONS.search +
+          '<input id="projSearch" type="text" placeholder="Search projects, managers, business units..." value="' + esc(projectSearch) + '" />' +
+        '</div>' +
+        '<div class="chips">' + chips + '</div>' +
+      '</div>' +
+      '<div id="projResults">' + projectCards() + '</div>';
+  }
+
+  function filteredProjects() {
+    const q = projectSearch.trim().toLowerCase();
+    return PROJECTS.filter(p => {
+      const okStatus = projectFilter === "All" || p.status === projectFilter;
+      const okSearch = !q || (p.name + " " + p.pm + " " + p.bu).toLowerCase().indexOf(q) !== -1;
+      return okStatus && okSearch;
+    });
+  }
+
+  function projectCards() {
+    const list = filteredProjects();
+    if (!list.length) return '<div class="card"><div class="card-body muted" style="text-align:center;padding:40px">No projects match your search.</div></div>';
+    const cards = list.map(p =>
+      '<div class="proj-card" data-pid="' + p.id + '">' +
+        '<div class="pc-top"><div><div class="pc-name">' + p.name + '</div>' +
+        '<div class="pc-meta">' + p.pm + ' · ' + p.bu + '</div></div>' + statusBadge(p.status) + '</div>' +
+        '<div class="progress"><div class="track"><div class="fill" style="width:' + p.complete + '%"></div></div>' +
+        '<span class="pct num">' + p.complete + '%</span></div>' +
+        '<div class="pc-figs"><div><div class="lab">Budget</div><div class="val num">' + moneyC(p.budget) + '</div></div>' +
+        '<div><div class="lab">Actual</div><div class="val num">' + moneyC(p.actual) + '</div></div>' +
+        '<div><div class="lab">Target</div><div class="val num">' + fmtDate(p.target) + '</div></div></div>' +
+      '</div>'
+    ).join("");
+    return '<div class="proj-grid">' + cards + '</div>';
+  }
+
+  function viewRisks() {
+    const rows = RISKS.slice().sort((a, b) => b.score - a.score).map((r, i) =>
+      '<tr><td class="num">' + (i + 1) + '</td>' +
+        '<td class="t-strong">' + r.title + '</td>' +
+        '<td>' + r.project + '</td>' +
+        '<td>' + r.owner + '</td>' +
+        '<td>' + severityBadge(r.severity) + '</td>' +
+        '<td>' + r.likelihood + '</td>' +
+        '<td>' + r.impact + '</td>' +
+        '<td><span class="badge b-neutral">' + r.status + '</span></td></tr>'
+    ).join("");
+    const crit = RISKS.filter(r => r.severity === "Critical").length;
+    const high = RISKS.filter(r => r.severity === "High").length;
+    return '<div class="kpi-row" style="grid-template-columns:repeat(3,1fr);max-width:640px">' +
+        kpiTile(ICONS.risks, "i-red", "Total Risks", RISKS.length, "Across portfolio") +
+        kpiTile(ICONS.warn, "i-red", "Critical", crit, "Immediate action") +
+        kpiTile(ICONS.warn, "i-amber", "High", high, "Close monitoring") +
+      '</div>' +
+      '<div class="card section-gap"><div class="card-head"><h2>Portfolio Risk Register</h2>' +
+      '<span class="hint">Ranked by priority</span></div>' +
+      '<div class="table-wrap"><table><thead><tr><th>#</th><th>Risk</th><th>Project</th><th>Owner</th>' +
+      '<th>Severity</th><th>Likelihood</th><th>Impact</th><th>Status</th></tr></thead><tbody>' +
+      rows + '</tbody></table></div></div>';
+  }
+
+  function viewFinancials() {
+    const s = portfolioStats();
+    const variance = s.budget - s.actual;
+    const spendPct = Math.round(s.actual / s.budget * 100);
+    const rows = PROJECTS.slice().sort((a, b) => b.budget - a.budget).map(p => {
+      const util = Math.round(p.actual / p.budget * 100);
+      const varc = p.budget - p.actual;
+      return '<tr class="row-click" data-pid="' + p.id + '"><td class="t-strong">' + p.name + '</td>' +
+        '<td class="t-right num">' + money(p.budget) + '</td>' +
+        '<td class="t-right num">' + money(p.actual) + '</td>' +
+        '<td class="t-right num">' + money(varc) + '</td>' +
+        '<td><div class="progress"><div class="track"><div class="fill" style="width:' + Math.min(util,100) + '%"></div></div>' +
+        '<span class="pct num">' + util + '%</span></div></td></tr>';
+    }).join("");
+    return '<div class="kpi-row" style="grid-template-columns:repeat(3,1fr)">' +
+        kpiTile(ICONS.wallet, "i-accent", "Total Budget", moneyC(s.budget), money(s.budget)) +
+        kpiTile(ICONS.dollar, "i-accent", "Actual Spend", moneyC(s.actual), spendPct + "% utilized") +
+        kpiTile(ICONS.check, "i-green", "Remaining", moneyC(variance), "Budget available") +
+      '</div>' +
+      '<div class="cols-2 section-gap">' + financialCard(null) +
+        '<div class="card"><div class="card-head"><h2>Budget vs Actual by Project</h2><span class="hint">Utilization</span></div>' +
+        '<div class="table-wrap"><table><thead><tr><th>Project</th><th class="t-right">Budget</th>' +
+        '<th class="t-right">Actual</th><th class="t-right">Remaining</th><th>Utilization</th></tr></thead><tbody>' +
+        rows + '</tbody></table></div></div>' +
+      '</div>';
+  }
+
+  function viewReports() {
+    const s = portfolioStats();
+    const defs = [
+      { key: "exec", icon: ICONS.dashboard, cls: "i-accent", title: "Executive Summary", desc: "Portfolio KPIs, health breakdown and headline financials." },
+      { key: "financial", icon: ICONS.financials, cls: "i-green", title: "Financial Report", desc: "Budget vs actual spend and utilization for all projects." },
+      { key: "risk", icon: ICONS.risks, cls: "i-red", title: "Risk Register", desc: "All open risks ranked by priority with owners." },
+      { key: "milestone", icon: ICONS.clock, cls: "i-amber", title: "Milestone Schedule", desc: "Key milestones due across the next 90 days." }
+    ];
+    const cards = defs.map(d =>
+      '<div class="report-card"><div class="rc-icon ' + d.cls + '">' + d.icon + '</div>' +
+      '<h3>' + d.title + '</h3><p>' + d.desc + '</p>' +
+      '<div class="flex" style="gap:8px"><button class="btn btn-primary" data-report="' + d.key + '">Preview</button>' +
+      '<button class="btn" data-print="1">' + ICONS.print + 'Print</button></div></div>'
+    ).join("");
+    return '<div class="card no-print" style="margin-bottom:18px"><div class="card-body flex between items-center" style="flex-wrap:wrap;gap:12px">' +
+      '<div><div style="font-weight:650;font-size:15px">Portfolio Reporting</div>' +
+      '<div class="muted" style="font-size:12.5px;margin-top:2px">Generate an on-screen preview, or print / export to PDF.</div></div>' +
+      '<div class="muted num" style="font-size:12.5px">' + s.total + ' projects · ' + moneyC(s.budget) + ' portfolio</div></div></div>' +
+      '<div class="report-grid">' + cards + '</div>' +
+      '<div id="reportPreview" class="section-gap"></div>';
+  }
+
+  function viewSettings() {
+    const sw = Object.keys(ACCENTS).map(k =>
+      '<div class="swatch ' + (settings.accent === k ? "active" : "") + '" data-accent="' + k + '" style="background:' + ACCENTS[k].color + '" title="' + k + '"></div>'
+    ).join("");
+    return '<div class="card" style="max-width:720px"><div class="card-head"><h2>Workspace Settings</h2>' +
+      '<span class="hint">Saved in your browser</span></div><div class="card-body">' +
+      '<div class="set-row"><div><div class="set-label">Organization name</div>' +
+        '<div class="set-desc">Shown in the sidebar and on reports.</div></div>' +
+        '<input class="set-input" id="setOrg" type="text" value="' + esc(settings.org) + '" /></div>' +
+      '<div class="set-row"><div><div class="set-label">Accent color</div>' +
+        '<div class="set-desc">Personalize the highlight color across the app.</div></div>' +
+        '<div class="swatches">' + sw + '</div></div>' +
+      '<div class="set-row"><div><div class="set-label">Table density</div>' +
+        '<div class="set-desc">Compact fits more rows on screen.</div></div>' +
+        '<div class="seg"><button data-density="comfortable" class="' + (settings.density === "comfortable" ? "active" : "") + '">Comfortable</button>' +
+        '<button data-density="compact" class="' + (settings.density === "compact" ? "active" : "") + '">Compact</button></div></div>' +
+      '<div class="set-row"><div><div class="set-label">Sample data</div>' +
+        '<div class="set-desc">This demo uses built-in sample data. No database, accounts, or external services are used.</div></div>' +
+        '<span class="badge b-green"><span class="dot"></span>Local only</span></div>' +
+      '</div></div>';
+  }
+
+  /* =========================================================
+     7) INTERACTIONS  — wiring up clicks after each render.
+     ========================================================= */
+  function wireRowClicks() {
+    document.querySelectorAll("[data-pid]").forEach(el =>
+      el.addEventListener("click", () => openProject(+el.dataset.pid))
+    );
+    document.querySelectorAll("[data-goview]").forEach(el =>
+      el.addEventListener("click", () => {
+        if (el.dataset.gofilter) projectFilter = el.dataset.gofilter;
+        navigate(el.dataset.goview);
+      })
+    );
+  }
+
+  function wireProjects() {
+    const search = document.getElementById("projSearch");
+    if (search) {
+      search.addEventListener("input", () => {
+        projectSearch = search.value;
+        document.getElementById("projResults").innerHTML = projectCards();
+        wireRowClicks();
+      });
+    }
+    document.querySelectorAll("[data-filter]").forEach(el =>
+      el.addEventListener("click", () => {
+        projectFilter = el.dataset.filter;
+        document.querySelectorAll("[data-filter]").forEach(c => c.classList.toggle("active", c === el));
+        document.getElementById("projResults").innerHTML = projectCards();
+        wireRowClicks();
+      })
+    );
+  }
+
+  function wireSettings() {
+    const org = document.getElementById("setOrg");
+    if (org) org.addEventListener("input", () => { settings.org = org.value; saveSettings(settings); applySettings(); });
+    document.querySelectorAll("[data-accent]").forEach(el =>
+      el.addEventListener("click", () => {
+        settings.accent = el.dataset.accent; saveSettings(settings); applySettings();
+        document.querySelectorAll("[data-accent]").forEach(s => s.classList.toggle("active", s === el));
+      })
+    );
+    document.querySelectorAll("[data-density]").forEach(el =>
+      el.addEventListener("click", () => {
+        settings.density = el.dataset.density; saveSettings(settings); applySettings();
+        document.querySelectorAll("[data-density]").forEach(s => s.classList.toggle("active", s === el));
+      })
+    );
+  }
+
+  function wireReports() {
+    document.querySelectorAll("[data-report]").forEach(el =>
+      el.addEventListener("click", () => renderReportPreview(el.dataset.report))
+    );
+    document.querySelectorAll("[data-print]").forEach(el =>
+      el.addEventListener("click", () => window.print())
+    );
+  }
+
+  function renderReportPreview(key) {
+    const s = portfolioStats();
+    let inner = "";
+    if (key === "exec") {
+      inner = '<div class="cols-2">' + healthCard() + financialCard(4) + '</div>';
+    } else if (key === "financial") {
+      inner = viewFinancialsInner();
+    } else if (key === "risk") {
+      inner = risksCard(RISKS.length);
+    } else if (key === "milestone") {
+      inner = milestonesCard();
+    }
+    const el = document.getElementById("reportPreview");
+    el.innerHTML = '<div class="card"><div class="card-head"><h2>Report Preview</h2>' +
+      '<button class="btn no-print" data-print="1">' + ICONS.print + 'Print / Export PDF</button></div>' +
+      '<div class="card-body">' + inner + '</div></div>';
+    el.querySelectorAll("[data-print]").forEach(b => b.addEventListener("click", () => window.print()));
+    el.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+  function viewFinancialsInner() {
+    const rows = PROJECTS.slice().sort((a, b) => b.budget - a.budget).map(p => {
+      const util = Math.round(p.actual / p.budget * 100);
+      return '<tr><td class="t-strong">' + p.name + '</td><td class="t-right num">' + money(p.budget) +
+        '</td><td class="t-right num">' + money(p.actual) + '</td><td class="t-right num">' + util + '%</td></tr>';
+    }).join("");
+    return '<div class="table-wrap"><table><thead><tr><th>Project</th><th class="t-right">Budget</th>' +
+      '<th class="t-right">Actual</th><th class="t-right">Utilization</th></tr></thead><tbody>' + rows + '</tbody></table></div>';
+  }
+
+  /* ---- Project detail drawer ---- */
+  function openProject(id) {
+    const p = PROJECTS.find(x => x.id === id);
+    if (!p) return;
+    const util = Math.round(p.actual / p.budget * 100);
+    const varc = p.budget - p.actual;
+    const risks = RISKS.filter(r => r.project === p.name);
+    const miles = MILESTONES.filter(m => m.project === p.name).map(m => Object.assign({}, m, { days: daysFromRef(m.date) }));
+
+    const riskHtml = risks.length ? risks.map(r =>
+      '<div class="list-item" style="padding:10px 0"><div class="list-main"><div class="list-title" style="font-size:13px">' + r.title + '</div>' +
+      '<div class="list-meta">Owner: ' + r.owner + '</div></div><div class="list-right">' + severityBadge(r.severity) + '</div></div>'
+    ).join("") : '<div class="muted" style="font-size:13px">No open risks recorded.</div>';
+
+    const mileHtml = miles.length ? miles.map(m =>
+      '<div class="list-item" style="padding:10px 0"><div class="list-main"><div class="list-title" style="font-size:13px">' + m.name + '</div>' +
+      '<div class="list-meta">' + fmtDate(m.date) + '</div></div><div class="list-right"><span class="badge b-neutral num">in ' + m.days + 'd</span></div></div>'
+    ).join("") : '<div class="muted" style="font-size:13px">No milestones in range.</div>';
+
+    document.getElementById("drawer").innerHTML =
+      '<div class="drawer-head"><button class="x" id="drawerClose">&times;</button>' +
+      '<div style="font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--text-subtle)">Project Detail</div>' +
+      '<div style="font-size:19px;font-weight:700;letter-spacing:-.02em;margin-top:4px">' + p.name + '</div>' +
+      '<div style="margin-top:10px">' + statusBadge(p.status) + '</div></div>' +
+      '<div class="drawer-body">' +
+        '<div class="dl">' +
+          dItem("Project Manager", p.pm) + dItem("Business Unit", p.bu) +
+          dItem("% Complete", p.complete + "%") + dItem("Target Completion", fmtDate(p.target)) +
+          dItem("Budget", money(p.budget)) + dItem("Actual Spend", money(p.actual)) +
+          dItem("Remaining", money(varc)) + dItem("Budget Utilization", util + "%") +
+        '</div>' +
+        '<div class="progress" style="margin-bottom:6px"><div class="track"><div class="fill" style="width:' + p.complete + '%"></div></div>' +
+        '<span class="pct num">' + p.complete + '%</span></div>' +
+        '<h3>Associated Risks</h3>' + riskHtml +
+        '<h3>Milestones</h3>' + mileHtml +
+      '</div>';
+    document.getElementById("overlay").classList.add("open");
+    document.getElementById("drawerClose").addEventListener("click", closeDrawer);
+  }
+  function dItem(k, v) { return '<div><div class="k">' + k + '</div><div class="v num">' + v + '</div></div>'; }
+  function closeDrawer() { document.getElementById("overlay").classList.remove("open"); }
+
+  /* =========================================================
+     8) START-UP  — run once when the page loads.
+     ========================================================= */
+  document.getElementById("overlay").addEventListener("click", e => {
+    if (e.target.id === "overlay") closeDrawer();
+  });
+  document.addEventListener("keydown", e => { if (e.key === "Escape") closeDrawer(); });
+
+  (function init() {
+    const d = REFERENCE_DATE;
+    document.getElementById("topDate").textContent = d.getDate() + " " + MONTHS[d.getMonth()] + " " + d.getFullYear();
+    applySettings();
+    buildNav();
+    navigate("dashboard");
+  })();
+  </script>
+</body>
+</html>
