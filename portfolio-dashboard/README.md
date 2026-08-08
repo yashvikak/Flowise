@@ -18,21 +18,30 @@ Dashboard, Portfolio, Projects, Risks & Issues, Financials, Reports, Settings.
   Track, At Risk, Delayed, Total Portfolio Budget, Actual Spend), a **Portfolio
   Health** donut using Red / Amber / Green indicators, a **Financial Overview**
   (budget vs actual), the **Top 5 Risks**, and **Upcoming Milestones** (next 90 days).
-- **Portfolio** — portfolio health and the full **Project Portfolio table**
-  (Project Name, Project Manager, Business Unit, Status, % Complete, Budget,
-  Actual Spend, Target Completion Date) across 8 sample projects.
-- **Projects** — the same projects as cards, with a working **search box** and
-  **status filters** (All / On Track / At Risk / Delayed).
-- **Risks & Issues** — the full risk register, ranked by priority.
-- **Financials** — budget vs actual spend, remaining budget, and utilization %.
-- **Reports** — generate an on-screen **preview** of a report, or **Print /
-  Export to PDF** (uses your browser's built-in print).
+- **Portfolio** — portfolio health plus **all projects grouped by business
+  unit**, each group showing its own health breakdown (Green/Amber/Red) and spend.
+- **Projects** — a searchable, filterable **project register table** with an
+  **"Add Project"** button. Clicking any project opens a **detailed view** with
+  project information, manager, status, % complete, budget, actual spend, start
+  date, target date, **milestones, risks, and tasks**.
+- **Risks & Issues** — a full **risk register**: Risk, Associated Project,
+  Impact, Probability, Severity, Owner, Mitigation, and Status.
+- **Financials** — a financial portfolio view: **Approved Budget, Forecast,
+  Actual Spend, Variance, and Budget Utilization** — portfolio-wide and per project.
+- **Reports** — several sample reports (Executive Summary, Financial, Risk
+  Register, Milestone Schedule, Business Unit Summary). Each can be **previewed**
+  on screen and **Printed / Exported to PDF** (uses your browser's built-in print).
 - **Settings** — change the organization name, accent color, and table density.
   Your choices are remembered by the browser.
 
-**Interactive touches:** clicking any project (row or card) opens a **detail
-panel** with its risks and milestones. Clicking the "At Risk" or "Delayed" tiles
-on the Dashboard jumps to a filtered project list.
+**Interactive touches:** clicking any project row opens a **detail panel** with
+its milestones, risks, and tasks. The **Add Project** form adds a new project to
+the list live. Clicking the "At Risk" or "Delayed" tiles on the Dashboard jumps
+to a filtered project list.
+
+> **Note on Add Project:** newly added projects live in memory for the current
+> session (they reset on reload). Saving them permanently is a later iteration —
+> it needs a database, which we are deliberately not adding yet.
 
 ---
 
@@ -57,8 +66,8 @@ Everything lives in **`index.html`**, split into three clearly-labeled parts:
 2. **STRUCTURE (HTML)** — the fixed frame: the sidebar, the top bar, and the
    empty main area that each screen is drawn into.
 3. **BEHAVIOR (JavaScript)** — the "brain", organized into numbered sections:
-   1. **Sample data** — the single source of truth (projects, risks, milestones).
-      *Change a number here and every screen updates automatically.*
+   1. **Sample data** — the single source of truth (projects, risks, milestones,
+      and tasks). *Change a number here and every screen updates automatically.*
    2. **Settings** — small preferences saved in the browser.
    3. **Helpers** — formatting money/dates and calculating portfolio totals.
    4. **Icons** — small inline SVGs (no icon library needed).

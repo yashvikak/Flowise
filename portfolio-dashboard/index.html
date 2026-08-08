@@ -382,6 +382,32 @@
     .btn-primary:hover { filter: brightness(1.07); color: #fff; }
     .btn svg { width: 15px; height: 15px; }
 
+    /* ---------- Iteration 2 additions ---------- */
+    .pos { color: var(--green); }
+    .neg { color: var(--red); }
+    .section-head { display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 8px; margin-bottom: 4px; }
+    .section-head h2 { font-size: 15px; font-weight: 650; letter-spacing: -.01em; }
+    .bu-group { margin-bottom: 16px; }
+    .bu-title { font-weight: 650; font-size: 14.5px; }
+    .bu-sub { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+    .health-chips { display: flex; gap: 6px; flex-wrap: wrap; }
+    .health-chips .badge { font-size: 11.5px; padding: 3px 9px; }
+
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 4px 0 18px; }
+    .form-grid .full { grid-column: 1 / -1; }
+    .form-grid label { display: block; font-size: 11px; text-transform: uppercase; letter-spacing: .04em; color: var(--text-subtle); margin-bottom: 5px; }
+    .form-grid input, .form-grid select {
+      width: 100%; padding: 9px 11px; border: 1px solid var(--border-strong);
+      border-radius: 8px; font-size: 13.5px; color: var(--text); background: var(--surface); outline: none;
+    }
+    .form-grid input:focus, .form-grid select:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+    .form-err { color: var(--red); font-size: 12.5px; margin: 0 0 12px; display: none; }
+
+    .task-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--border); }
+    .task-row:last-child { border-bottom: none; }
+    .task-name { font-size: 13px; font-weight: 500; }
+    .task-meta { font-size: 11.5px; color: var(--text-muted); margin-top: 2px; }
+
     .muted { color: var(--text-muted); }
     .flex { display: flex; }
     .between { justify-content: space-between; }
@@ -476,24 +502,27 @@
   // A fixed "today" so the demo always shows a consistent 90-day window.
   const REFERENCE_DATE = new Date(2026, 7, 8); // 8 Aug 2026 (month is 0-based)
 
+  // Each project now also carries a start date and a forecast (projected
+  // final spend). Business units are shared so projects group meaningfully.
   const PROJECTS = [
-    { id: 1, name: "Customer Portal Revamp", pm: "Sarah Chen", bu: "Digital & eCommerce", status: "On Track", complete: 72, budget: 1200000, actual: 860000, target: "2026-11-15" },
-    { id: 2, name: "ERP Cloud Migration", pm: "Michael Torres", bu: "Enterprise IT", status: "At Risk", complete: 45, budget: 3500000, actual: 2100000, target: "2027-02-28" },
-    { id: 3, name: "Mobile Banking App 2.0", pm: "Priya Nair", bu: "Retail Banking", status: "On Track", complete: 88, budget: 2000000, actual: 1750000, target: "2026-09-30" },
-    { id: 4, name: "Data Lake Modernization", pm: "David Okafor", bu: "Data & Analytics", status: "Delayed", complete: 30, budget: 2800000, actual: 1950000, target: "2026-10-20" },
-    { id: 5, name: "Cybersecurity Uplift Program", pm: "Elena Volkov", bu: "Information Security", status: "At Risk", complete: 60, budget: 1600000, actual: 1120000, target: "2026-12-10" },
-    { id: 6, name: "Warehouse Automation Rollout", pm: "James Whitfield", bu: "Supply Chain", status: "On Track", complete: 54, budget: 4200000, actual: 2050000, target: "2027-04-15" },
-    { id: 7, name: "HR Systems Consolidation", pm: "Aisha Rahman", bu: "People & Culture", status: "Delayed", complete: 22, budget: 950000, actual: 700000, target: "2026-09-05" },
-    { id: 8, name: "Marketing Analytics Platform", pm: "Tom Bradley", bu: "Marketing", status: "On Track", complete: 66, budget: 1100000, actual: 640000, target: "2026-12-01" }
+    { id: 1, name: "Customer Portal Revamp", pm: "Sarah Chen", bu: "Digital & Marketing", status: "On Track", complete: 72, budget: 1200000, forecast: 1180000, actual: 860000, start: "2025-09-01", target: "2026-11-15" },
+    { id: 2, name: "ERP Cloud Migration", pm: "Michael Torres", bu: "Technology & Data", status: "At Risk", complete: 45, budget: 3500000, forecast: 3850000, actual: 2100000, start: "2025-06-15", target: "2027-02-28" },
+    { id: 3, name: "Mobile Banking App 2.0", pm: "Priya Nair", bu: "Banking & Operations", status: "On Track", complete: 88, budget: 2000000, forecast: 1980000, actual: 1750000, start: "2025-11-10", target: "2026-09-30" },
+    { id: 4, name: "Data Lake Modernization", pm: "David Okafor", bu: "Technology & Data", status: "Delayed", complete: 30, budget: 2800000, forecast: 3150000, actual: 1950000, start: "2026-01-20", target: "2026-10-20" },
+    { id: 5, name: "Cybersecurity Uplift Program", pm: "Elena Volkov", bu: "Technology & Data", status: "At Risk", complete: 60, budget: 1600000, forecast: 1650000, actual: 1120000, start: "2025-10-05", target: "2026-12-10" },
+    { id: 6, name: "Warehouse Automation Rollout", pm: "James Whitfield", bu: "Banking & Operations", status: "On Track", complete: 54, budget: 4200000, forecast: 4100000, actual: 2050000, start: "2026-02-01", target: "2027-04-15" },
+    { id: 7, name: "HR Systems Consolidation", pm: "Aisha Rahman", bu: "Corporate Services", status: "Delayed", complete: 22, budget: 950000, forecast: 1080000, actual: 700000, start: "2026-03-15", target: "2026-09-05" },
+    { id: 8, name: "Marketing Analytics Platform", pm: "Tom Bradley", bu: "Digital & Marketing", status: "On Track", complete: 66, budget: 1100000, forecast: 1050000, actual: 640000, start: "2025-12-01", target: "2026-12-01" }
   ];
 
+  // "likelihood" is shown as Probability. Each risk now has a mitigation plan.
   const RISKS = [
-    { title: "ERP data migration integrity failure", project: "ERP Cloud Migration", owner: "Michael Torres", severity: "Critical", likelihood: "High", impact: "High", score: 25, status: "Open" },
-    { title: "Data Lake cost overrun exceeds contingency", project: "Data Lake Modernization", owner: "David Okafor", severity: "Critical", likelihood: "High", impact: "High", score: 24, status: "Open" },
-    { title: "Security control gaps in legacy systems", project: "Cybersecurity Uplift Program", owner: "Elena Volkov", severity: "High", likelihood: "High", impact: "Medium", score: 20, status: "Mitigating" },
-    { title: "Regulatory compliance deadline slip", project: "Mobile Banking App 2.0", owner: "Priya Nair", severity: "High", likelihood: "Medium", impact: "High", score: 18, status: "Open" },
-    { title: "Key automation vendor resourcing shortfall", project: "Warehouse Automation Rollout", owner: "James Whitfield", severity: "High", likelihood: "Medium", impact: "Medium", score: 15, status: "Mitigating" },
-    { title: "HR data privacy exposure during cutover", project: "HR Systems Consolidation", owner: "Aisha Rahman", severity: "Medium", likelihood: "Medium", impact: "Medium", score: 12, status: "Open" }
+    { title: "ERP data migration integrity failure", project: "ERP Cloud Migration", owner: "Michael Torres", severity: "Critical", likelihood: "High", impact: "High", score: 25, status: "Open", mitigation: "Phased migration with automated reconciliation and rollback checkpoints." },
+    { title: "Data Lake cost overrun exceeds contingency", project: "Data Lake Modernization", owner: "David Okafor", severity: "Critical", likelihood: "High", impact: "High", score: 24, status: "Open", mitigation: "Introduce cloud cost guardrails and weekly spend reviews with Finance." },
+    { title: "Security control gaps in legacy systems", project: "Cybersecurity Uplift Program", owner: "Elena Volkov", severity: "High", likelihood: "High", impact: "Medium", score: 20, status: "Mitigating", mitigation: "Prioritized remediation backlog with monthly control assurance testing." },
+    { title: "Regulatory compliance deadline slip", project: "Mobile Banking App 2.0", owner: "Priya Nair", severity: "High", likelihood: "Medium", impact: "High", score: 18, status: "Open", mitigation: "Engage compliance early; freeze scope and add a regulatory review gate." },
+    { title: "Key automation vendor resourcing shortfall", project: "Warehouse Automation Rollout", owner: "James Whitfield", severity: "High", likelihood: "Medium", impact: "Medium", score: 15, status: "Mitigating", mitigation: "Secure a backup vendor and contractual resourcing commitments." },
+    { title: "HR data privacy exposure during cutover", project: "HR Systems Consolidation", owner: "Aisha Rahman", severity: "Medium", likelihood: "Medium", impact: "Medium", score: 12, status: "Open", mitigation: "Mask data in non-production and complete a privacy impact assessment." }
   ];
 
   const MILESTONES = [
@@ -504,6 +533,41 @@
     { date: "2026-10-15", project: "Marketing Analytics Platform", name: "Beta Launch", owner: "Tom Bradley" },
     { date: "2026-10-28", project: "ERP Cloud Migration", name: "Finance Module Pilot", owner: "Michael Torres" },
     { date: "2026-11-03", project: "Data Lake Modernization", name: "Ingestion Framework Delivery", owner: "David Okafor" }
+  ];
+
+  // Tasks belonging to each project (shown in the detailed project view).
+  const TASKS = [
+    { project: "Customer Portal Revamp", name: "Design system & component library", owner: "Sarah Chen", status: "Done", due: "2026-06-30" },
+    { project: "Customer Portal Revamp", name: "Checkout flow rebuild", owner: "Sarah Chen", status: "In Progress", due: "2026-09-30" },
+    { project: "Customer Portal Revamp", name: "Accessibility (WCAG) audit", owner: "Sarah Chen", status: "To Do", due: "2026-10-31" },
+
+    { project: "ERP Cloud Migration", name: "Finance module data mapping", owner: "Michael Torres", status: "In Progress", due: "2026-09-15" },
+    { project: "ERP Cloud Migration", name: "Cutover rehearsal", owner: "Michael Torres", status: "To Do", due: "2026-12-01" },
+    { project: "ERP Cloud Migration", name: "Legacy system decommission plan", owner: "Michael Torres", status: "To Do", due: "2027-01-15" },
+
+    { project: "Mobile Banking App 2.0", name: "Biometric login", owner: "Priya Nair", status: "Done", due: "2026-07-20" },
+    { project: "Mobile Banking App 2.0", name: "UAT with pilot users", owner: "Priya Nair", status: "In Progress", due: "2026-08-25" },
+    { project: "Mobile Banking App 2.0", name: "App store release prep", owner: "Priya Nair", status: "To Do", due: "2026-09-20" },
+
+    { project: "Data Lake Modernization", name: "Ingestion framework build", owner: "David Okafor", status: "In Progress", due: "2026-11-03" },
+    { project: "Data Lake Modernization", name: "Cost optimization review", owner: "David Okafor", status: "To Do", due: "2026-10-15" },
+    { project: "Data Lake Modernization", name: "Data quality rules engine", owner: "David Okafor", status: "To Do", due: "2026-12-10" },
+
+    { project: "Cybersecurity Uplift Program", name: "Multi-factor authentication rollout", owner: "Elena Volkov", status: "Done", due: "2026-06-15" },
+    { project: "Cybersecurity Uplift Program", name: "Penetration testing", owner: "Elena Volkov", status: "In Progress", due: "2026-10-02" },
+    { project: "Cybersecurity Uplift Program", name: "Security awareness training", owner: "Elena Volkov", status: "To Do", due: "2026-11-30" },
+
+    { project: "Warehouse Automation Rollout", name: "Vendor selection", owner: "James Whitfield", status: "Done", due: "2026-05-30" },
+    { project: "Warehouse Automation Rollout", name: "Pilot site installation", owner: "James Whitfield", status: "In Progress", due: "2026-10-30" },
+    { project: "Warehouse Automation Rollout", name: "Staff training program", owner: "James Whitfield", status: "To Do", due: "2027-01-20" },
+
+    { project: "HR Systems Consolidation", name: "Employee data cleansing", owner: "Aisha Rahman", status: "In Progress", due: "2026-08-31" },
+    { project: "HR Systems Consolidation", name: "Payroll parallel run", owner: "Aisha Rahman", status: "To Do", due: "2026-09-05" },
+    { project: "HR Systems Consolidation", name: "Employee self-service portal", owner: "Aisha Rahman", status: "To Do", due: "2026-11-15" },
+
+    { project: "Marketing Analytics Platform", name: "Data source integration", owner: "Tom Bradley", status: "Done", due: "2026-07-10" },
+    { project: "Marketing Analytics Platform", name: "Dashboard build", owner: "Tom Bradley", status: "In Progress", due: "2026-10-15" },
+    { project: "Marketing Analytics Platform", name: "Attribution model", owner: "Tom Bradley", status: "To Do", due: "2026-11-30" }
   ];
 
   /* =========================================================
@@ -562,6 +626,17 @@
   }
   // Escape user-entered text (e.g. org name) before putting it on the page
   function esc(s) { return String(s).replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;" }[c])); }
+
+  // Badge for a task's status (Done / In Progress / To Do)
+  function taskBadge(status) {
+    const map = { "Done": "b-green", "In Progress": "b-amber", "To Do": "b-neutral" };
+    return '<span class="badge ' + (map[status] || "b-neutral") + '">' + status + "</span>";
+  }
+  // Turn a Date into a "YYYY-MM-DD" string (used when adding a project)
+  function isoDate(d) {
+    return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+  }
+  const uniqueBUs = () => PROJECTS.map(p => p.bu).filter((v, i, a) => a.indexOf(v) === i).sort();
 
   // Portfolio-wide numbers, computed from the data (never hand-typed)
   function portfolioStats() {
@@ -794,11 +869,50 @@
       '</tr></thead><tbody>' + rows + '</tbody></table></div>';
   }
 
+  // A compact project table used inside each business-unit group (no BU column)
+  function buTable(items) {
+    const rows = items.map(p =>
+      '<tr class="row-click" data-pid="' + p.id + '">' +
+        '<td class="t-strong">' + p.name + '</td><td>' + p.pm + '</td><td>' + statusBadge(p.status) + '</td>' +
+        '<td><div class="progress"><div class="track"><div class="fill" style="width:' + p.complete + '%"></div></div>' +
+        '<span class="pct num">' + p.complete + '%</span></div></td>' +
+        '<td class="t-right num">' + money(p.budget) + '</td><td class="t-right num">' + money(p.actual) + '</td>' +
+        '<td class="num">' + fmtDate(p.target) + '</td></tr>'
+    ).join("");
+    return '<div class="table-wrap"><table><thead><tr><th>Project</th><th>Project Manager</th><th>Status</th>' +
+      '<th>% Complete</th><th class="t-right">Budget</th><th class="t-right">Actual</th><th>Target</th>' +
+      '</tr></thead><tbody>' + rows + '</tbody></table></div>';
+  }
+
+  // All projects grouped into cards by business unit, each with a health summary
+  function buGroups() {
+    const map = {};
+    PROJECTS.forEach(p => { (map[p.bu] = map[p.bu] || []).push(p); });
+    return Object.keys(map).sort().map(bu => {
+      const items = map[bu];
+      const g = items.filter(p => p.status === "On Track").length;
+      const a = items.filter(p => p.status === "At Risk").length;
+      const r = items.filter(p => p.status === "Delayed").length;
+      const budget = items.reduce((s, p) => s + p.budget, 0);
+      const actual = items.reduce((s, p) => s + p.actual, 0);
+      const chips = [];
+      if (g) chips.push('<span class="badge b-green"><span class="dot"></span>' + g + ' On Track</span>');
+      if (a) chips.push('<span class="badge b-amber"><span class="dot"></span>' + a + ' At Risk</span>');
+      if (r) chips.push('<span class="badge b-red"><span class="dot"></span>' + r + ' Delayed</span>');
+      return '<div class="card bu-group"><div class="card-head">' +
+        '<div><div class="bu-title">' + bu + '</div>' +
+        '<div class="bu-sub num">' + items.length + ' project' + (items.length > 1 ? "s" : "") +
+        ' · ' + moneyC(actual) + ' of ' + moneyC(budget) + ' spent</div></div>' +
+        '<div class="health-chips">' + chips.join("") + '</div></div>' +
+        buTable(items) + '</div>';
+    }).join("");
+  }
+
   function viewPortfolio() {
     return '<div class="cols-2">' + healthCard() + financialCard(4) + '</div>' +
-      '<div class="card section-gap"><div class="card-head"><h2>Project Portfolio</h2>' +
-      '<span class="hint">' + PROJECTS.length + ' projects</span></div>' +
-      projectTable(PROJECTS) + '</div>';
+      '<div class="section-head section-gap"><h2>Projects by Business Unit</h2>' +
+      '<span class="muted" style="font-size:12.5px">' + PROJECTS.length + ' projects across ' + uniqueBUs().length + ' business units</span></div>' +
+      '<div style="margin-top:12px">' + buGroups() + '</div>';
   }
 
   function viewProjects() {
@@ -810,8 +924,11 @@
           '<input id="projSearch" type="text" placeholder="Search projects, managers, business units..." value="' + esc(projectSearch) + '" />' +
         '</div>' +
         '<div class="chips">' + chips + '</div>' +
+        '<button class="btn btn-primary" id="addProjectBtn" style="margin-left:auto">' +
+          '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>' +
+          'Add Project</button>' +
       '</div>' +
-      '<div id="projResults">' + projectCards() + '</div>';
+      '<div id="projResults">' + projectResults() + '</div>';
   }
 
   function filteredProjects() {
@@ -823,21 +940,12 @@
     });
   }
 
-  function projectCards() {
+  // The Projects page shows the full project register as a table
+  function projectResults() {
     const list = filteredProjects();
-    if (!list.length) return '<div class="card"><div class="card-body muted" style="text-align:center;padding:40px">No projects match your search.</div></div>';
-    const cards = list.map(p =>
-      '<div class="proj-card" data-pid="' + p.id + '">' +
-        '<div class="pc-top"><div><div class="pc-name">' + p.name + '</div>' +
-        '<div class="pc-meta">' + p.pm + ' · ' + p.bu + '</div></div>' + statusBadge(p.status) + '</div>' +
-        '<div class="progress"><div class="track"><div class="fill" style="width:' + p.complete + '%"></div></div>' +
-        '<span class="pct num">' + p.complete + '%</span></div>' +
-        '<div class="pc-figs"><div><div class="lab">Budget</div><div class="val num">' + moneyC(p.budget) + '</div></div>' +
-        '<div><div class="lab">Actual</div><div class="val num">' + moneyC(p.actual) + '</div></div>' +
-        '<div><div class="lab">Target</div><div class="val num">' + fmtDate(p.target) + '</div></div></div>' +
-      '</div>'
-    ).join("");
-    return '<div class="proj-grid">' + cards + '</div>';
+    const count = '<div class="muted" style="font-size:12.5px;margin-bottom:10px">Showing ' + list.length + ' of ' + PROJECTS.length + ' projects</div>';
+    if (!list.length) return count + '<div class="card"><div class="card-body muted" style="text-align:center;padding:40px">No projects match your search.</div></div>';
+    return count + '<div class="card">' + projectTable(list) + '</div>';
   }
 
   function viewRisks() {
@@ -845,60 +953,75 @@
       '<tr><td class="num">' + (i + 1) + '</td>' +
         '<td class="t-strong">' + r.title + '</td>' +
         '<td>' + r.project + '</td>' +
-        '<td>' + r.owner + '</td>' +
-        '<td>' + severityBadge(r.severity) + '</td>' +
-        '<td>' + r.likelihood + '</td>' +
         '<td>' + r.impact + '</td>' +
+        '<td>' + r.likelihood + '</td>' +
+        '<td>' + severityBadge(r.severity) + '</td>' +
+        '<td>' + r.owner + '</td>' +
+        '<td class="muted" style="min-width:230px">' + r.mitigation + '</td>' +
         '<td><span class="badge b-neutral">' + r.status + '</span></td></tr>'
     ).join("");
     const crit = RISKS.filter(r => r.severity === "Critical").length;
     const high = RISKS.filter(r => r.severity === "High").length;
-    return '<div class="kpi-row" style="grid-template-columns:repeat(3,1fr);max-width:640px">' +
+    const open = RISKS.filter(r => r.status === "Open").length;
+    return '<div class="kpi-row" style="grid-template-columns:repeat(4,1fr)">' +
         kpiTile(ICONS.risks, "i-red", "Total Risks", RISKS.length, "Across portfolio") +
         kpiTile(ICONS.warn, "i-red", "Critical", crit, "Immediate action") +
         kpiTile(ICONS.warn, "i-amber", "High", high, "Close monitoring") +
+        kpiTile(ICONS.clock, "i-accent", "Open", open, "Not yet mitigated") +
       '</div>' +
       '<div class="card section-gap"><div class="card-head"><h2>Portfolio Risk Register</h2>' +
       '<span class="hint">Ranked by priority</span></div>' +
-      '<div class="table-wrap"><table><thead><tr><th>#</th><th>Risk</th><th>Project</th><th>Owner</th>' +
-      '<th>Severity</th><th>Likelihood</th><th>Impact</th><th>Status</th></tr></thead><tbody>' +
-      rows + '</tbody></table></div></div>';
+      '<div class="table-wrap"><table><thead><tr><th>#</th><th>Risk</th><th>Project</th>' +
+      '<th>Impact</th><th>Probability</th><th>Severity</th><th>Owner</th><th>Mitigation</th><th>Status</th>' +
+      '</tr></thead><tbody>' + rows + '</tbody></table></div></div>';
   }
 
   function viewFinancials() {
-    const s = portfolioStats();
-    const variance = s.budget - s.actual;
-    const spendPct = Math.round(s.actual / s.budget * 100);
+    const budget = PROJECTS.reduce((s, p) => s + p.budget, 0);
+    const forecast = PROJECTS.reduce((s, p) => s + p.forecast, 0);
+    const actual = PROJECTS.reduce((s, p) => s + p.actual, 0);
+    const variance = budget - forecast;            // + = under budget, - = over
+    const util = Math.round(actual / budget * 100);
+    const varClass = variance < 0 ? "i-red" : "i-green";
+    const varText = (variance < 0 ? "-" : "+") + moneyC(Math.abs(variance));
+
     const rows = PROJECTS.slice().sort((a, b) => b.budget - a.budget).map(p => {
-      const util = Math.round(p.actual / p.budget * 100);
-      const varc = p.budget - p.actual;
+      const u = Math.round(p.actual / p.budget * 100);
+      const v = p.budget - p.forecast;
+      const vCls = v < 0 ? "neg" : "pos";
       return '<tr class="row-click" data-pid="' + p.id + '"><td class="t-strong">' + p.name + '</td>' +
         '<td class="t-right num">' + money(p.budget) + '</td>' +
+        '<td class="t-right num">' + money(p.forecast) + '</td>' +
         '<td class="t-right num">' + money(p.actual) + '</td>' +
-        '<td class="t-right num">' + money(varc) + '</td>' +
-        '<td><div class="progress"><div class="track"><div class="fill" style="width:' + Math.min(util,100) + '%"></div></div>' +
-        '<span class="pct num">' + util + '%</span></div></td></tr>';
+        '<td class="t-right num ' + vCls + '">' + (v < 0 ? "-" : "+") + money(Math.abs(v)) + '</td>' +
+        '<td><div class="progress"><div class="track"><div class="fill" style="width:' + Math.min(u, 100) + '%"></div></div>' +
+        '<span class="pct num">' + u + '%</span></div></td></tr>';
     }).join("");
-    return '<div class="kpi-row" style="grid-template-columns:repeat(3,1fr)">' +
-        kpiTile(ICONS.wallet, "i-accent", "Total Budget", moneyC(s.budget), money(s.budget)) +
-        kpiTile(ICONS.dollar, "i-accent", "Actual Spend", moneyC(s.actual), spendPct + "% utilized") +
-        kpiTile(ICONS.check, "i-green", "Remaining", moneyC(variance), "Budget available") +
+
+    return '<div class="kpi-row" style="grid-template-columns:repeat(5,1fr)">' +
+        kpiTile(ICONS.wallet, "i-accent", "Approved Budget", moneyC(budget), money(budget)) +
+        kpiTile(ICONS.financials, "i-amber", "Forecast", moneyC(forecast), "Projected final") +
+        kpiTile(ICONS.dollar, "i-accent", "Actual Spend", moneyC(actual), util + "% of budget") +
+        kpiTile(ICONS.check, varClass, "Variance", varText, variance < 0 ? "Over forecast" : "Under forecast") +
+        kpiTile(ICONS.clock, "i-accent", "Budget Utilization", util + "%", "Actual of approved") +
       '</div>' +
-      '<div class="cols-2 section-gap">' + financialCard(null) +
-        '<div class="card"><div class="card-head"><h2>Budget vs Actual by Project</h2><span class="hint">Utilization</span></div>' +
-        '<div class="table-wrap"><table><thead><tr><th>Project</th><th class="t-right">Budget</th>' +
-        '<th class="t-right">Actual</th><th class="t-right">Remaining</th><th>Utilization</th></tr></thead><tbody>' +
-        rows + '</tbody></table></div></div>' +
-      '</div>';
+      '<div class="card section-gap"><div class="card-head"><h2>Financial Portfolio</h2>' +
+        '<span class="hint">Approved vs forecast vs actual</span></div>' +
+        '<div class="table-wrap"><table><thead><tr><th>Project</th>' +
+        '<th class="t-right">Approved Budget</th><th class="t-right">Forecast</th>' +
+        '<th class="t-right">Actual Spend</th><th class="t-right">Variance</th><th>Utilization</th>' +
+        '</tr></thead><tbody>' + rows + '</tbody></table></div></div>' +
+      '<div class="section-gap">' + financialCard(null) + '</div>';
   }
 
   function viewReports() {
     const s = portfolioStats();
     const defs = [
       { key: "exec", icon: ICONS.dashboard, cls: "i-accent", title: "Executive Summary", desc: "Portfolio KPIs, health breakdown and headline financials." },
-      { key: "financial", icon: ICONS.financials, cls: "i-green", title: "Financial Report", desc: "Budget vs actual spend and utilization for all projects." },
-      { key: "risk", icon: ICONS.risks, cls: "i-red", title: "Risk Register", desc: "All open risks ranked by priority with owners." },
-      { key: "milestone", icon: ICONS.clock, cls: "i-amber", title: "Milestone Schedule", desc: "Key milestones due across the next 90 days." }
+      { key: "financial", icon: ICONS.financials, cls: "i-green", title: "Financial Report", desc: "Approved budget, forecast, actual spend and variance per project." },
+      { key: "risk", icon: ICONS.risks, cls: "i-red", title: "Risk Register", desc: "All open risks ranked by priority with owners and mitigations." },
+      { key: "milestone", icon: ICONS.clock, cls: "i-amber", title: "Milestone Schedule", desc: "Key milestones due across the next 90 days." },
+      { key: "bu", icon: ICONS.portfolio, cls: "i-accent", title: "Business Unit Summary", desc: "Projects, spend and health grouped by business unit." }
     ];
     const cards = defs.map(d =>
       '<div class="report-card"><div class="rc-icon ' + d.cls + '">' + d.icon + '</div>' +
@@ -951,23 +1074,84 @@
     );
   }
 
+  function refreshProjects() {
+    document.getElementById("projResults").innerHTML = projectResults();
+    wireRowClicks();
+  }
   function wireProjects() {
     const search = document.getElementById("projSearch");
     if (search) {
-      search.addEventListener("input", () => {
-        projectSearch = search.value;
-        document.getElementById("projResults").innerHTML = projectCards();
-        wireRowClicks();
-      });
+      search.addEventListener("input", () => { projectSearch = search.value; refreshProjects(); });
     }
     document.querySelectorAll("[data-filter]").forEach(el =>
       el.addEventListener("click", () => {
         projectFilter = el.dataset.filter;
         document.querySelectorAll("[data-filter]").forEach(c => c.classList.toggle("active", c === el));
-        document.getElementById("projResults").innerHTML = projectCards();
-        wireRowClicks();
+        refreshProjects();
       })
     );
+    const addBtn = document.getElementById("addProjectBtn");
+    if (addBtn) addBtn.addEventListener("click", openAddProject);
+  }
+
+  /* ---- "Add Project" form (opens in the slide-in drawer) ---- */
+  function openAddProject() {
+    const buOptions = uniqueBUs().map(b => '<option value="' + esc(b) + '">' + b + "</option>").join("");
+    const statusOptions = ["On Track", "At Risk", "Delayed"].map(s => '<option value="' + s + '">' + s + "</option>").join("");
+    const today = isoDate(REFERENCE_DATE);
+    const later = isoDate(new Date(REFERENCE_DATE.getTime() + 180 * 86400000));
+    document.getElementById("drawer").innerHTML =
+      '<div class="drawer-head"><button class="x" id="drawerClose">&times;</button>' +
+      '<div style="font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--text-subtle)">New Project</div>' +
+      '<div style="font-size:19px;font-weight:700;letter-spacing:-.02em;margin-top:4px">Add Project</div></div>' +
+      '<div class="drawer-body">' +
+        '<div class="form-err" id="apErr"></div>' +
+        '<div class="form-grid">' +
+          '<div class="full"><label>Project Name</label><input id="apName" type="text" placeholder="e.g. Payments Platform Upgrade" /></div>' +
+          '<div><label>Project Manager</label><input id="apPm" type="text" placeholder="Full name" /></div>' +
+          '<div><label>Business Unit</label><select id="apBu">' + buOptions + '</select></div>' +
+          '<div><label>Status</label><select id="apStatus">' + statusOptions + '</select></div>' +
+          '<div><label>% Complete</label><input id="apComplete" type="number" min="0" max="100" value="0" /></div>' +
+          '<div><label>Budget ($)</label><input id="apBudget" type="number" min="0" placeholder="1000000" /></div>' +
+          '<div><label>Actual Spend ($)</label><input id="apActual" type="number" min="0" value="0" /></div>' +
+          '<div><label>Start Date</label><input id="apStart" type="date" value="' + today + '" /></div>' +
+          '<div><label>Target Completion</label><input id="apTarget" type="date" value="' + later + '" /></div>' +
+        '</div>' +
+        '<div class="flex" style="gap:10px">' +
+          '<button class="btn btn-primary" id="apSave">Add Project</button>' +
+          '<button class="btn" id="apCancel">Cancel</button>' +
+        '</div>' +
+      '</div>';
+    document.getElementById("overlay").classList.add("open");
+    document.getElementById("drawerClose").addEventListener("click", closeDrawer);
+    document.getElementById("apCancel").addEventListener("click", closeDrawer);
+    document.getElementById("apSave").addEventListener("click", submitNewProject);
+  }
+
+  function submitNewProject() {
+    const get = id => document.getElementById(id).value;
+    const name = get("apName").trim();
+    const pm = get("apPm").trim();
+    const err = document.getElementById("apErr");
+    if (!name || !pm) {
+      err.textContent = "Please enter at least a project name and a project manager.";
+      err.style.display = "block";
+      return;
+    }
+    const toInt = v => { const n = parseInt(String(v).replace(/[^0-9]/g, ""), 10); return isNaN(n) ? 0 : n; };
+    const complete = Math.max(0, Math.min(100, toInt(get("apComplete"))));
+    const budget = toInt(get("apBudget"));
+    const actual = toInt(get("apActual"));
+    const start = get("apStart") || isoDate(REFERENCE_DATE);
+    const target = get("apTarget") || isoDate(REFERENCE_DATE);
+    const id = PROJECTS.reduce((m, p) => Math.max(m, p.id), 0) + 1;
+    PROJECTS.push({
+      id, name, pm, bu: get("apBu"), status: get("apStatus"),
+      complete, budget, forecast: budget, actual, start, target
+    });
+    closeDrawer();
+    projectFilter = "All"; projectSearch = "";
+    if (currentView === "projects") navigate("projects");
   }
 
   function wireSettings() {
@@ -1007,6 +1191,8 @@
       inner = risksCard(RISKS.length);
     } else if (key === "milestone") {
       inner = milestonesCard();
+    } else if (key === "bu") {
+      inner = buGroups();
     }
     const el = document.getElementById("reportPreview");
     el.innerHTML = '<div class="card"><div class="card-head"><h2>Report Preview</h2>' +
@@ -1017,12 +1203,14 @@
   }
   function viewFinancialsInner() {
     const rows = PROJECTS.slice().sort((a, b) => b.budget - a.budget).map(p => {
-      const util = Math.round(p.actual / p.budget * 100);
+      const v = p.budget - p.forecast;
       return '<tr><td class="t-strong">' + p.name + '</td><td class="t-right num">' + money(p.budget) +
-        '</td><td class="t-right num">' + money(p.actual) + '</td><td class="t-right num">' + util + '%</td></tr>';
+        '</td><td class="t-right num">' + money(p.forecast) + '</td><td class="t-right num">' + money(p.actual) +
+        '</td><td class="t-right num ' + (v < 0 ? "neg" : "pos") + '">' + (v < 0 ? "-" : "+") + money(Math.abs(v)) + '</td></tr>';
     }).join("");
-    return '<div class="table-wrap"><table><thead><tr><th>Project</th><th class="t-right">Budget</th>' +
-      '<th class="t-right">Actual</th><th class="t-right">Utilization</th></tr></thead><tbody>' + rows + '</tbody></table></div>';
+    return '<div class="table-wrap"><table><thead><tr><th>Project</th><th class="t-right">Approved</th>' +
+      '<th class="t-right">Forecast</th><th class="t-right">Actual</th><th class="t-right">Variance</th>' +
+      '</tr></thead><tbody>' + rows + '</tbody></table></div>';
   }
 
   /* ---- Project detail drawer ---- */
@@ -1033,16 +1221,23 @@
     const varc = p.budget - p.actual;
     const risks = RISKS.filter(r => r.project === p.name);
     const miles = MILESTONES.filter(m => m.project === p.name).map(m => Object.assign({}, m, { days: daysFromRef(m.date) }));
+    const tasks = TASKS.filter(t => t.project === p.name);
 
     const riskHtml = risks.length ? risks.map(r =>
       '<div class="list-item" style="padding:10px 0"><div class="list-main"><div class="list-title" style="font-size:13px">' + r.title + '</div>' +
-      '<div class="list-meta">Owner: ' + r.owner + '</div></div><div class="list-right">' + severityBadge(r.severity) + '</div></div>'
+      '<div class="list-meta">Owner: ' + r.owner + ' · ' + r.impact + ' impact / ' + r.likelihood + ' probability</div></div>' +
+      '<div class="list-right">' + severityBadge(r.severity) + '</div></div>'
     ).join("") : '<div class="muted" style="font-size:13px">No open risks recorded.</div>';
 
     const mileHtml = miles.length ? miles.map(m =>
       '<div class="list-item" style="padding:10px 0"><div class="list-main"><div class="list-title" style="font-size:13px">' + m.name + '</div>' +
       '<div class="list-meta">' + fmtDate(m.date) + '</div></div><div class="list-right"><span class="badge b-neutral num">in ' + m.days + 'd</span></div></div>'
     ).join("") : '<div class="muted" style="font-size:13px">No milestones in range.</div>';
+
+    const taskHtml = tasks.length ? tasks.map(t =>
+      '<div class="task-row"><div><div class="task-name">' + t.name + '</div>' +
+      '<div class="task-meta">' + t.owner + ' · Due ' + fmtDate(t.due) + '</div></div>' + taskBadge(t.status) + '</div>'
+    ).join("") : '<div class="muted" style="font-size:13px">No tasks recorded.</div>';
 
     document.getElementById("drawer").innerHTML =
       '<div class="drawer-head"><button class="x" id="drawerClose">&times;</button>' +
@@ -1052,14 +1247,16 @@
       '<div class="drawer-body">' +
         '<div class="dl">' +
           dItem("Project Manager", p.pm) + dItem("Business Unit", p.bu) +
-          dItem("% Complete", p.complete + "%") + dItem("Target Completion", fmtDate(p.target)) +
-          dItem("Budget", money(p.budget)) + dItem("Actual Spend", money(p.actual)) +
-          dItem("Remaining", money(varc)) + dItem("Budget Utilization", util + "%") +
+          dItem("Start Date", fmtDate(p.start)) + dItem("Target Completion", fmtDate(p.target)) +
+          dItem("% Complete", p.complete + "%") + dItem("Budget Utilization", util + "%") +
+          dItem("Budget", money(p.budget)) + dItem("Forecast", money(p.forecast)) +
+          dItem("Actual Spend", money(p.actual)) + dItem("Remaining", money(varc)) +
         '</div>' +
         '<div class="progress" style="margin-bottom:6px"><div class="track"><div class="fill" style="width:' + p.complete + '%"></div></div>' +
         '<span class="pct num">' + p.complete + '%</span></div>' +
-        '<h3>Associated Risks</h3>' + riskHtml +
         '<h3>Milestones</h3>' + mileHtml +
+        '<h3>Risks</h3>' + riskHtml +
+        '<h3>Tasks</h3>' + taskHtml +
       '</div>';
     document.getElementById("overlay").classList.add("open");
     document.getElementById("drawerClose").addEventListener("click", closeDrawer);
