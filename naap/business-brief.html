@@ -1,0 +1,472 @@
+<title>The Naap Thesis</title>
+<style>
+  :root{
+    --paper:#E9E5DC;
+    --paper-2:#F4F1EA;
+    --paper-3:#DFDACE;
+    --ink:#16233C;
+    --ink-2:#4E5A73;
+    --ink-3:#78829A;
+    --rule:#C7C1B2;
+    --rule-soft:#D8D3C6;
+    --indigo:#2F4B7C;
+    --madder:#9C3423;
+    --moss:#3F6B4E;
+    --shadow:rgba(22,35,60,.09);
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua","URW Palladio L",Georgia,serif;
+    --mono:ui-monospace,"SF Mono",SFMono-Regular,Menlo,Consolas,"DejaVu Sans Mono",monospace;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --paper:#111722;
+      --paper-2:#1A2130;
+      --paper-3:#232C3E;
+      --ink:#E4E1D7;
+      --ink-2:#A2ABBD;
+      --ink-3:#7B8598;
+      --rule:#2F3949;
+      --rule-soft:#242D3C;
+      --indigo:#87A9DC;
+      --madder:#E0785F;
+      --moss:#78B58C;
+      --shadow:rgba(0,0,0,.4);
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#111722;
+    --paper-2:#1A2130;
+    --paper-3:#232C3E;
+    --ink:#E4E1D7;
+    --ink-2:#A2ABBD;
+    --ink-3:#7B8598;
+    --rule:#2F3949;
+    --rule-soft:#242D3C;
+    --indigo:#87A9DC;
+    --madder:#E0785F;
+    --moss:#78B58C;
+    --shadow:rgba(0,0,0,.4);
+  }
+
+  *{box-sizing:border-box;}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:var(--serif);
+    font-size:17.5px;
+    line-height:1.62;
+    margin:0;
+    padding:0 5vw 8rem;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1080px;margin:0 auto;}
+
+  /* ---- masthead ---- */
+  .masthead{padding:4.5rem 0 0;}
+  .stamp{
+    font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--madder);display:flex;flex-wrap:wrap;gap:.4rem 1.4rem;
+  }
+  .stamp span{white-space:nowrap;}
+  h1{
+    font-family:var(--serif);
+    font-size:clamp(2.6rem,6.5vw,4.4rem);
+    line-height:1.02;
+    letter-spacing:-.022em;
+    font-weight:normal;
+    margin:1.6rem 0 0;
+    text-wrap:balance;
+    max-width:16ch;
+  }
+  h1 em{font-style:italic;color:var(--indigo);}
+  .dek{
+    font-size:1.22rem;line-height:1.55;color:var(--ink-2);
+    max-width:60ch;margin:1.5rem 0 0;
+  }
+
+  /* ---- the signature rule: a measuring tape ---- */
+  .tape{
+    height:14px;margin:3.2rem 0 0;position:relative;
+    border-bottom:1px solid var(--rule);
+  }
+  .tape::before{
+    content:"";position:absolute;inset:auto 0 0 0;height:6px;
+    background-image:repeating-linear-gradient(to right,var(--rule) 0 1px,transparent 1px 11px);
+  }
+  .tape::after{
+    content:"";position:absolute;inset:auto 0 0 0;height:12px;
+    background-image:repeating-linear-gradient(to right,var(--rule) 0 1px,transparent 1px 55px);
+  }
+
+  /* ---- section scaffold with margin rail ---- */
+  section{padding:3.6rem 0 0;}
+  .sec-head{display:grid;grid-template-columns:1fr;gap:.5rem;margin-bottom:1.6rem;}
+  .eyebrow{
+    font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--ink-3);
+  }
+  h2{
+    font-size:clamp(1.6rem,3.4vw,2.1rem);line-height:1.14;letter-spacing:-.014em;
+    font-weight:normal;margin:0;text-wrap:balance;max-width:24ch;
+  }
+  h3{
+    font-family:var(--mono);font-size:12.5px;letter-spacing:.12em;text-transform:uppercase;
+    font-weight:600;color:var(--indigo);margin:2.4rem 0 .7rem;
+  }
+  p{margin:0 0 1.1rem;max-width:68ch;}
+  .body-col{max-width:68ch;}
+  strong{font-weight:600;color:var(--ink);}
+  em.term{font-style:italic;color:var(--ink-2);}
+  a{color:var(--indigo);}
+  a:focus-visible,button:focus-visible{outline:2px solid var(--madder);outline-offset:3px;}
+
+  /* margin rail at wide viewports */
+  @media(min-width:1000px){
+    .railed{display:grid;grid-template-columns:132px 1fr;gap:0 2.6rem;align-items:start;}
+    .rail{
+      font-family:var(--mono);font-size:11px;line-height:1.5;letter-spacing:.05em;
+      color:var(--ink-3);text-align:right;padding-top:.45rem;
+      border-right:1px solid var(--rule-soft);padding-right:2.6rem;margin-right:-2.6rem;
+      position:sticky;top:1.5rem;
+    }
+    .rail b{display:block;color:var(--madder);font-weight:600;letter-spacing:.12em;margin-bottom:.4rem;}
+  }
+  @media(max-width:999px){ .rail{display:none;} }
+
+  /* ---- callout: the load-bearing claims ---- */
+  .claim{
+    border-left:3px solid var(--madder);
+    background:var(--paper-2);
+    padding:1.15rem 1.4rem;margin:1.6rem 0;max-width:68ch;
+    box-shadow:0 1px 0 var(--shadow);
+  }
+  .claim p{margin:0;}
+  .claim p + p{margin-top:.8rem;}
+  .claim .tag{
+    display:block;font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--madder);margin-bottom:.5rem;
+  }
+
+  /* ---- data tables: the manifest voice ---- */
+  .tbl-wrap{overflow-x:auto;margin:1.5rem 0 .6rem;border-top:1px solid var(--rule);}
+  table{border-collapse:collapse;width:100%;font-family:var(--mono);font-size:13px;min-width:540px;}
+  caption{
+    caption-side:bottom;text-align:left;font-family:var(--mono);font-size:11px;
+    color:var(--ink-3);padding-top:.7rem;line-height:1.5;letter-spacing:.02em;
+  }
+  th{
+    text-align:left;font-weight:600;font-size:10.5px;letter-spacing:.13em;text-transform:uppercase;
+    color:var(--ink-3);padding:.7rem .85rem;border-bottom:1px solid var(--rule);vertical-align:bottom;
+  }
+  td{padding:.55rem .85rem;border-bottom:1px solid var(--rule-soft);vertical-align:top;}
+  td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap;}
+  tbody tr:hover{background:var(--paper-2);}
+  tr.total td{border-top:1px solid var(--rule);border-bottom:2px solid var(--rule);font-weight:600;background:var(--paper-2);}
+  tr.total:hover td{background:var(--paper-3);}
+  .hot{color:var(--madder);font-weight:600;}
+  .cool{color:var(--moss);font-weight:600;}
+  .lede-cell{font-family:var(--serif);font-size:15px;line-height:1.45;}
+
+  /* ---- phase / step lists where sequence is real ---- */
+  ol.seq{list-style:none;counter-reset:s;padding:0;margin:1.4rem 0 0;display:grid;gap:1.1rem;}
+  ol.seq li{counter-increment:s;display:grid;grid-template-columns:2.4rem 1fr;gap:1rem;align-items:start;max-width:70ch;}
+  ol.seq li::before{
+    content:counter(s,decimal-leading-zero);
+    font-family:var(--mono);font-size:11px;letter-spacing:.08em;color:var(--madder);
+    padding-top:.42rem;border-top:1px solid var(--madder);
+  }
+  ol.seq li > div > b{display:block;font-family:var(--serif);font-size:1.06rem;font-weight:600;margin-bottom:.15rem;}
+  ol.seq li p{margin:0;font-size:.97rem;color:var(--ink-2);}
+
+  ul.plain{padding-left:1.1rem;margin:.6rem 0 1.2rem;max-width:68ch;}
+  ul.plain li{margin-bottom:.5rem;}
+
+  /* ---- card grid ---- */
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(238px,1fr));gap:1px;background:var(--rule-soft);border:1px solid var(--rule-soft);margin:1.6rem 0;}
+  .card{background:var(--paper-2);padding:1.15rem 1.25rem;}
+  .card .k{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);}
+  .card .v{font-family:var(--mono);font-size:1.5rem;letter-spacing:-.02em;margin:.4rem 0 .35rem;font-variant-numeric:tabular-nums;}
+  .card .n{font-size:.93rem;line-height:1.45;color:var(--ink-2);}
+
+  /* ---- verdict block ---- */
+  .verdict{
+    background:var(--paper-3);border:1px solid var(--rule);
+    padding:1.6rem 1.7rem;margin:2rem 0 0;
+  }
+  .verdict h3{margin-top:0;}
+  .verdict p:last-child{margin-bottom:0;}
+
+  footer{margin-top:4rem;padding-top:1.4rem;border-top:1px solid var(--rule);}
+  footer p{font-family:var(--mono);font-size:11px;letter-spacing:.04em;color:var(--ink-3);line-height:1.7;max-width:78ch;}
+</style>
+
+<div class="wrap">
+
+<header class="masthead">
+  <div class="stamp">
+    <span>Working name — Naap</span>
+    <span>Made-to-measure ethnic wear, India → diaspora</span>
+    <span>Pre-seed brief</span>
+  </div>
+  <h1>What it takes to put an Indian tailor <em>in every diaspora closet</em></h1>
+  <p class="dek">The demand is obvious and the supply exists. What sits between them is not a website — it&rsquo;s customs paperwork, a measurement problem, and a promise about a wedding date. This brief is about what it actually costs to stand in that gap.</p>
+  <div class="tape" role="presentation"></div>
+</header>
+
+<section class="railed">
+  <div class="rail"><b>The read</b>Where the intuition is right, and the one place it is wrong</div>
+  <div>
+    <div class="sec-head">
+      <div class="eyebrow">Reframing the premise</div>
+      <h2>You are not selling cheap. You are selling fit and certainty.</h2>
+    </div>
+    <div class="body-col">
+      <p>The instinct — <em class="term">it&rsquo;s so easy and so cheap in India</em> — is the right observation about the world and the wrong basis for the business. It was a viable arbitrage until recently. It is not one now.</p>
+      <p>Through mid-2025, a garment worth under $800 could enter the United States duty-free as a low-value parcel. That exemption was withdrawn — first for China, then for all origins from late August 2025. Every parcel now owes duty, and apparel duty is not a rounding error: depending on fibre content, US rates on ready-made garments run from under 1% on silk to roughly 15&ndash;32% on man-made fibres, which is exactly what most lehengas, gowns and party wear are cut from. On top of that sits whatever additional India-specific tariff is in force at the time you ship, and through 2025 that number was punitively high and politically volatile.</p>
+      <div class="claim">
+        <span class="tag">Load-bearing claim</span>
+        <p>You cannot deliver Indian prices to a foreign doorstep any more. The freight and the duty are real and they are yours to absorb or to pass on. <strong>So don&rsquo;t compete with India on price — compete with the diaspora tailor on fit, on certainty, and on the absence of nasty surprises.</strong></p>
+      </div>
+      <p>That competitor is a much softer target. A woman in Edison or Southall or Brampton who wants a blouse that actually fits today has three options, and all three are bad: wait for a trip to India; hand fabric to a relative flying out; or take it to the local tailor, who charges $150&ndash;400 for what costs ₹1,500 in Lajpat Nagar and is booked eight weeks deep from September through February. She is already paying near-Western prices. She is just paying them for a worse outcome.</p>
+      <p>That is the price umbrella you sell under. Not ₹1,500. Something like $300&ndash;450 for a made-to-measure outfit that arrives finished, on a guaranteed date, with the duty already paid and no courier calling for money at the door.</p>
+    </div>
+  </div>
+</section>
+
+<div class="tape" role="presentation"></div>
+
+<section class="railed">
+  <div class="rail"><b>The gap</b>Two compliance burdens, one entity that absorbs both</div>
+  <div>
+    <div class="sec-head">
+      <div class="eyebrow">Structural insight</div>
+      <h2>The real product is being the exporter and the importer, so nobody else has to be</h2>
+    </div>
+    <div class="body-col">
+      <p>The reason those Delhi and Jaipur boutiques aren&rsquo;t already selling overseas isn&rsquo;t that they lack a storefront. It&rsquo;s that legally exporting from India is a specialist job that a twelve-person boutique cannot staff. It needs an IEC (Importer Exporter Code), a GST registration with a Letter of Undertaking so exports are zero-rated and input tax is recoverable, a designated AD bank to receive foreign currency under FEMA rules, and an e-BRC closing out every single shipment to prove the money came home. Miss the paperwork and the money is stuck.</p>
+      <p>Meanwhile on the receiving end, the customer is not equipped to be an importer either — which is what a direct-from-India parcel silently makes her, right up to the moment the courier bills her for duty she didn&rsquo;t expect.</p>
+      <div class="claim">
+        <span class="tag">The wedge, precisely stated</span>
+        <p>Stand up two entities. An <strong>India private limited company</strong> that buys from boutiques as a <em class="term">domestic</em> sale — so the vendor just raises a normal GST invoice and is done — and exports under one IEC, one LUT, one bank relationship. And a <strong>destination-market company</strong> that is the importer of record, clears goods in consolidated commercial entries through a licensed broker, and sells to the customer at a landed, duty-paid price.</p>
+        <p>The vendor gets export demand with zero export burden. The customer gets a domestic purchase. You are the only one touching a customs form. That is the gap, and it is a much better moat than a marketplace UI.</p>
+      </div>
+      <p>It also changes the revenue model. Don&rsquo;t take a marketplace commission — become the merchant of record. Buy at wholesale, sell at retail, roughly a 2.2&ndash;2.6&times; markup. You are carrying the customs risk, the QC risk and the fit guarantee, so you need control of the price and the margin, not a 20% clip of someone else&rsquo;s.</p>
+    </div>
+  </div>
+</section>
+
+<div class="tape" role="presentation"></div>
+
+<section class="railed">
+  <div class="rail"><b>Economics</b>One outfit, all-in, under two tariff regimes</div>
+  <div>
+    <div class="sec-head">
+      <div class="eyebrow">Unit economics</div>
+      <h2>The whole business lives or dies on one line of this table</h2>
+    </div>
+    <div class="body-col">
+      <p>A mid-tier custom lehenga set, retailing at $349. Vendor cost ₹12,000, converted near ₹88 to the dollar. Freight assumes consolidated air cargo, not a one-off courier — a single DHL parcel from Delhi runs $45&ndash;80 and destroys the model on its own.</p>
+    </div>
+    <div class="tbl-wrap">
+      <table>
+        <caption>Illustrative per-order economics. Duty figures are modelling assumptions, not quotes — apparel rates vary by fibre, construction and HS classification, and additional India tariffs have moved repeatedly. Get real numbers from a licensed customs broker before committing to a retail price.</caption>
+        <thead>
+          <tr>
+            <th>Cost line</th>
+            <th class="num">Scenario A<br>baseline duty</th>
+            <th class="num">Scenario B<br>punitive tariff</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Vendor cost, made-to-measure (₹12,000)</td><td class="num">$136</td><td class="num">$136</td></tr>
+          <tr><td>India hub: QC, photography, domestic courier</td><td class="num">$6</td><td class="num">$6</td></tr>
+          <tr><td>International freight, consolidated air (1.3 kg)</td><td class="num">$14</td><td class="num">$14</td></tr>
+          <tr><td>Customs brokerage, amortised over a 150-unit entry</td><td class="num">$1</td><td class="num">$1</td></tr>
+          <tr><td><strong>Import duty on declared value</strong></td><td class="num cool">$24</td><td class="num hot">$99</td></tr>
+          <tr><td>Destination last-mile delivery</td><td class="num">$9</td><td class="num">$9</td></tr>
+          <tr><td>Payment processing (2.9% + $0.30)</td><td class="num">$10</td><td class="num">$10</td></tr>
+          <tr><td>Fit remediation reserve (remake / alteration credit)</td><td class="num">$18</td><td class="num">$18</td></tr>
+          <tr><td>Customer experience and ops labour</td><td class="num">$12</td><td class="num">$12</td></tr>
+          <tr class="total"><td>Total cost of goods delivered</td><td class="num">$230</td><td class="num">$305</td></tr>
+          <tr class="total"><td>Gross margin at $349 retail</td><td class="num cool">$119 &nbsp;/&nbsp; 34%</td><td class="num hot">$44 &nbsp;/&nbsp; 13%</td></tr>
+          <tr class="total"><td>Retail price required to hold 34%</td><td class="num">$349</td><td class="num hot">$462</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="body-col">
+      <p>Thirty-four percent gross is a workable specialty-retail business. Thirteen percent is not — it cannot carry customer acquisition, let alone a remake. So the tariff line is not a detail to be handled later by an operations hire. <strong>It is the variable that decides whether your price is $349 or $462, and whether the pitch is easy or hard.</strong></p>
+      <p>Two things follow. First, price duty-inclusive and say so loudly — <em class="term">no customs bill at your door</em> is a genuine differentiator, because the alternative experience is genuinely bad. Second, treat the destination market as a variable you get to choose rather than a given.</p>
+    </div>
+  </div>
+</section>
+
+<div class="tape" role="presentation"></div>
+
+<section class="railed">
+  <div class="rail"><b>Geography</b>The US is the obvious market and possibly not the first one</div>
+  <div>
+    <div class="sec-head">
+      <div class="eyebrow">Market selection</div>
+      <h2>Pick the beachhead on the customs math, not on instinct</h2>
+    </div>
+    <div class="tbl-wrap">
+      <table>
+        <caption>Import treatment of India-origin apparel, indicative only and subject to change — verify every line with a broker in that market before launch. Diaspora figures are approximate orders of magnitude.</caption>
+        <thead>
+          <tr><th>Market</th><th class="num">Duty</th><th class="num">Consumption tax</th><th>Read</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>United States</td><td class="num">~1&ndash;32% by fibre</td><td class="num">Sales tax at POS</td><td class="lede-cell">Biggest market, densest wedding economy, worst and least predictable tariff exposure. Low-value exemption gone.</td></tr>
+          <tr><td>United Kingdom</td><td class="num">~12%</td><td class="num">20% VAT</td><td class="lede-cell">Predictable, no punitive India surcharge, ~1.9M Indian-origin population, mature bridal market. <span class="cool">Strong alternative beachhead.</span></td></tr>
+          <tr><td>UAE</td><td class="num">~5%</td><td class="num">5% VAT</td><td class="lede-cell">Cheapest customs math and a 3-hour flight, but the pain is mildest — customers fly home often. Easy logistics, weaker need.</td></tr>
+          <tr><td>Canada</td><td class="num">~18%</td><td class="num">GST + provincial</td><td class="lede-cell">High duty, strong Toronto/Vancouver demand, underserved tailoring supply.</td></tr>
+          <tr><td>Australia</td><td class="num">~0&ndash;5%</td><td class="num">10% GST</td><td class="lede-cell">Favourable duty, long freight leg, smaller base. Good third market.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="body-col">
+      <p>The honest tension: the UK and UAE have friendlier arithmetic, but you are in New Jersey — inside one of the densest Indian populations outside India, walking distance from Oak Tree Road, with a personal network built here. Founder-market fit is worth a lot of margin points, because it is what makes the first hundred orders happen at all.</p>
+      <div class="claim">
+        <span class="tag">Recommendation</span>
+        <p>Start in the US because that&rsquo;s where you can actually sell, but <strong>build the operating entity so the destination is swappable from day one</strong> — India export company, destination importer, broker relationship. Adding the UK later should be a new importer entity and a new broker, not a rebuild. If US tariffs stay punitive, that optionality is the difference between pivoting and dying.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="tape" role="presentation"></div>
+
+<section class="railed">
+  <div class="rail"><b>Fit</b>The hard technical problem and the one that earns the premium</div>
+  <div>
+    <div class="sec-head">
+      <div class="eyebrow">Operations</div>
+      <h2>Measurement is the product. Everything else is logistics.</h2>
+    </div>
+    <div class="body-col">
+      <p>Getting a lehenga skirt right remotely is not that hard. Getting a saree blouse right remotely is very hard — it is a fitted, darted garment with no ease, and it is the single most common reason a custom order fails. If you don&rsquo;t solve this, you have a shipping company with a bad refund rate.</p>
+      <p>Four approaches, in ascending order of how much they actually work:</p>
+      <ul class="plain">
+        <li><strong>Self-measurement with a tape.</strong> Cheapest, and the least reliable. People measure over clothes, pull too tight, and misplace the bust point. Expect a high first-attempt failure rate on fitted garments.</li>
+        <li><strong>Body-scan apps</strong> (3DLOOK, MySize and similar, licensed per scan). Good for circumference, weak on the precise vertical placements — shoulder-to-apex, dart depth — that fitted ethnic wear depends on.</li>
+        <li><strong>Reference-garment measurement.</strong> The customer sends photos and flat measurements of a blouse or kurta that already fits her well. This is what competent remote tailors actually do, and it is dramatically more reliable than measuring a body, because it captures fit preference alongside dimension.</li>
+        <li><strong>Live video fitting</strong> with the tailor in India. A twenty-minute call costs you a couple of hundred rupees of tailor time and does more for conversion and trust than any amount of website.</li>
+      </ul>
+      <div class="claim">
+        <span class="tag">Design decision</span>
+        <p>Combine the last two, and turn the output into a persistent <strong>fit profile</strong> that improves with every order — measurements, reference-garment photos, and post-delivery feedback (<em class="term">sleeve was tight, hem an inch long</em>) fed back as corrections. The first order is your hardest. The fifth should be one click. That accumulating profile is the retention mechanic and the thing a competitor cannot copy by cloning your site.</p>
+      </div>
+      <p>Then guarantee it, and reserve for it. Budget 8&ndash;12% of revenue in year one for remakes and local alteration credit, falling as the profiles mature. Line up alteration partners in your top metros — a $60 local alteration is far cheaper than a remake shipped from Delhi, and it saves the wedding date, which is the thing that actually matters.</p>
+    </div>
+  </div>
+</section>
+
+<div class="tape" role="presentation"></div>
+
+<section class="railed">
+  <div class="rail"><b>Wedge</b>Sell to the wedding party, not the individual</div>
+  <div>
+    <div class="sec-head">
+      <div class="eyebrow">Go to market</div>
+      <h2>One bride is fifteen outfits, one measuring session, one shipment</h2>
+    </div>
+    <div class="body-col">
+      <p>Selling one $349 outfit to one customer at a time is a hard direct-to-consumer business with punishing acquisition costs. Selling to a bridal party is a different business entirely, and it is the single best wedge available here.</p>
+      <div class="cards">
+        <div class="card"><div class="k">Order value</div><div class="v">8&ndash;15&times;</div><div class="n">Bride, mother, sisters, bridesmaids, sangeet and mehndi changes — one decision, many garments.</div></div>
+        <div class="card"><div class="k">Freight per unit</div><div class="v">&minus;40%</div><div class="n">One consolidated shipment, one customs entry, brokerage amortised across the whole party.</div></div>
+        <div class="card"><div class="k">Acquisition</div><div class="v">1 : 12</div><div class="n">You acquire one customer and serve a dozen. Every guest at the wedding sees the result.</div></div>
+        <div class="card"><div class="k">Lead time</div><div class="v">4&ndash;9 mo</div><div class="n">Weddings are planned far ahead — real production runway instead of a rush order.</div></div>
+      </div>
+      <p>Colour-coordination across a family is something Indian weddings genuinely want and that no ready-to-wear channel can deliver. It is also the natural home for a fit-station event: one afternoon, one measurer, fifteen fit profiles captured properly by a trained person rather than fifteen people guessing with a tape.</p>
+      <h3>The distribution advantage you already have</h3>
+      <p>A national pageant title is a real go-to-market asset and should be used deliberately rather than decoratively. It reaches precisely the demographic that buys this — Indian-American women, 25&ndash;45, socially visible, attending multiple events a season where being well-dressed is the point. Titleholders across years and states are a ready-made ambassador network with credibility in ten metros at once. Community galas, garba nights and Diwali events are venues where you can measure people in person and be trusted while doing it.</p>
+      <p>Practically: recruit ambassadors in your top metros, give each a fit kit and a commission, and have them host measurement events. That converts a personal network into distribution, which is the thing most competitors in this space cannot buy.</p>
+    </div>
+  </div>
+</section>
+
+<div class="tape" role="presentation"></div>
+
+<section class="railed">
+  <div class="rail"><b>Sequence</b>What to build, and what to deliberately fake</div>
+  <div>
+    <div class="sec-head">
+      <div class="eyebrow">Build plan</div>
+      <h2>The first hundred orders need no software at all</h2>
+    </div>
+    <div class="body-col">
+      <p>The temptation is to build the marketplace. Don&rsquo;t — not yet. Every unknown that can kill this business is operational, and software written before those answers is written against guesses.</p>
+    </div>
+    <ol class="seq">
+      <li><div><b>Concierge, months 0&ndash;6, roughly 50&ndash;100 orders</b><p>WhatsApp, a Shopify page, a shared spreadsheet. Three vendors you have personally visited. You handle every order by hand. The goal is not revenue — it is discovering the fit failure modes, the true landed cost, and the real transit time. Ship at least one consolidated multi-unit entry alongside single parcels and compare what customs actually does.</p></div></li>
+      <li><div><b>Wedding parties, months 4&ndash;12</b><p>Ambassador-hosted fit events in three metros. Package pricing for bridal groups. This is where you find out whether the unit economics survive contact with a real customer and whether the guarantee is affordable.</p></div></li>
+      <li><div><b>Productise what hurt, months 9&ndash;18</b><p>Now build, and only what the manual phase proved you need: the fit profile with its feedback loop, a landed-cost calculator that shows duty before payment, a date-guarantee engine that works backwards from the event, and a vendor portal with spec sheets and a QC photo checklist. Keep ordering on WhatsApp — this customer lives there, and moving her to an app is a tax, not a feature.</p></div></li>
+      <li><div><b>Second market, months 18+</b><p>Stand up the second importer entity. If you built step one correctly this is a configuration exercise, not a rewrite.</p></div></li>
+    </ol>
+    <div class="body-col">
+      <h3>Capital and team, roughly</h3>
+      <div class="cards">
+        <div class="card"><div class="k">Phase 1 — concierge</div><div class="v">$20&ndash;40k</div><div class="n">Entity setup in both countries, customs bond and broker, samples, inventory float, freight tests, legal.</div></div>
+        <div class="card"><div class="k">Phase 2 — first 500 orders</div><div class="v">$150&ndash;300k</div><div class="n">India ops lead, customer experience hire, working capital, ambassador programme, basic tech.</div></div>
+        <div class="card"><div class="k">Phase 3 — scale</div><div class="v">$1&ndash;2M</div><div class="n">Multi-metro, real product build, inventory depth, marketing.</div></div>
+        <div class="card"><div class="k">Critical hire</div><div class="v">Delhi</div><div class="n">An India operations lead who can inspect every garment before it leaves. Quality control is not remoteable.</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="tape" role="presentation"></div>
+
+<section class="railed">
+  <div class="rail"><b>Risk</b>Ranked by what actually kills the company</div>
+  <div>
+    <div class="sec-head">
+      <div class="eyebrow">Risk register</div>
+      <h2>What goes wrong, and what you can do about it</h2>
+    </div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Risk</th><th class="num">Severity</th><th>Mitigation</th></tr></thead>
+        <tbody>
+          <tr><td>Tariff regime shifts against India</td><td class="num hot">Existential</td><td class="lede-cell">Destination-swappable entity structure; duty-inclusive pricing with headroom; quarterly review with a broker; never quote a price you can&rsquo;t hold.</td></tr>
+          <tr><td>Fit failure rate stays high</td><td class="num hot">Severe</td><td class="lede-cell">Reference-garment method; trained in-person measurers at events; funded remake reserve; local alteration partners in every metro.</td></tr>
+          <tr><td>A missed wedding date</td><td class="num hot">Severe</td><td class="lede-cell">Publicly shared failure with outsized reputational cost. Build weeks of slack into every promise; guarantee the date and mean it; cap orders per season to protect it.</td></tr>
+          <tr><td>Vendor quality inconsistency</td><td class="num">High</td><td class="lede-cell">Single India hub, 100% inspection, every garment photographed before export, three vendors deep in each category so one can be dropped.</td></tr>
+          <tr><td>Seasonality and cash flow</td><td class="num">Medium</td><td class="lede-cell">Demand concentrates Oct&ndash;Feb and around summer NRI weddings. Plan working capital for the trough, not the average.</td></tr>
+          <tr><td>Copycats</td><td class="num cool">Low</td><td class="lede-cell">The defensible assets are the fit-profile database, vendor relationships and community trust — none of which are cloned by copying a website.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<div class="tape" role="presentation"></div>
+
+<section class="railed">
+  <div class="rail"><b>Next</b>Five tests, sixty days, under five thousand dollars</div>
+  <div>
+    <div class="sec-head">
+      <div class="eyebrow">Validation plan</div>
+      <h2>Cheap experiments that answer the expensive questions</h2>
+    </div>
+    <ol class="seq">
+      <li><div><b>Ship five real orders, end to end</b><p>The single highest-value thing you can do. Real customers, real money, real customs. You learn actual landed cost, actual duty paid, actual transit time and actual fit success in one experiment. Everything else is opinion until this is done.</p></div></li>
+      <li><div><b>Ship one parcel and one consolidated ten-unit shipment</b><p>Compare what customs charges each way, and what the brokerage actually costs. This tells you whether the consolidation thesis — the core of the economics table above — is real.</p></div></li>
+      <li><div><b>Interview eight boutiques in Delhi and Jaipur</b><p>Do they hold an IEC? What is their made-to-measure capacity in a month? What price would they quote for a foreign customer&rsquo;s measurements? You are testing whether supply is as willing as assumed.</p></div></li>
+      <li><div><b>Interview fifteen customers who had an outfit made in the last year</b><p>Where, what it cost, how long, what went wrong. You are looking for the exact sentence they use to describe the pain — that sentence becomes the headline.</p></div></li>
+      <li><div><b>Landing page and a small ad spend</b><p>A few hundred dollars to Indian-American women 25&ndash;45 in NJ, NY, Chicago, the Bay Area, Dallas and Atlanta. Measure signup rate, and put a price question in the form — willingness to pay at $349 versus $449 is the number that decides your market.</p></div></li>
+    </ol>
+    <div class="verdict">
+      <h3>Bottom line</h3>
+      <p>The demand is real, your access to it is unusually good, and the supply-side gap you identified — that vendors want to sell abroad and structurally cannot — is a genuine and defensible place to stand. The business is viable.</p>
+      <p>But it is a <strong>cross-border operations company wearing a fashion brand&rsquo;s clothes</strong>, not a storefront. The winning version prices duty in, guarantees the fit and the date, and treats the measurement profile as the asset. The losing version competes on Indian prices, discovers the tariff line at month four, and cannot pay for the remakes.</p>
+      <p>Before spending money on product: run test one. Five real orders will teach you more than any amount of planning, including this brief.</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>Prepared as a pre-seed thinking document. Duty rates, tariff levels and de minimis rules cited here are directional and were moving quickly through 2025&ndash;26 — every figure that touches customs must be confirmed with a licensed customs broker in the destination market before it informs a price. Cost model figures are assumptions for reasoning, not quotes.</p>
+</footer>
+
+</div>
