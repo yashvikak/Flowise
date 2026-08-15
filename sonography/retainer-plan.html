@@ -1,0 +1,359 @@
+<title>The Vascular Retainer</title>
+<style>
+  :root{
+    --ground:#F4F7FA;
+    --panel:#FFFFFF;
+    --panel-2:#EAEFF5;
+    --panel-3:#DFE6EE;
+    --ink:#121924;
+    --ink-2:#48556A;
+    --ink-3:#78849A;
+    --line:#D3DBE5;
+    --line-soft:#E4EAF1;
+    --flow:#1B5C9E;
+    --flow-soft:#DCE8F5;
+    --alert:#B5372A;
+    --alert-soft:#F7E4E1;
+    --ok:#1B6E52;
+    --ok-soft:#DFEFE8;
+    --sans:"Helvetica Neue","Segoe UI",system-ui,-apple-system,Arial,sans-serif;
+    --mono:ui-monospace,"SF Mono",SFMono-Regular,Menlo,Consolas,"DejaVu Sans Mono",monospace;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ground:#0A0D13;
+      --panel:#141A24;
+      --panel-2:#1C2530;
+      --panel-3:#26313E;
+      --ink:#E7ECF3;
+      --ink-2:#A2AEBF;
+      --ink-3:#78849A;
+      --line:#2B3542;
+      --line-soft:#1E2732;
+      --flow:#74AAE8;
+      --flow-soft:#1A2938;
+      --alert:#E87864;
+      --alert-soft:#2E1F1C;
+      --ok:#5CBF97;
+      --ok-soft:#16291F;
+    }
+  }
+  :root[data-theme="dark"]{
+    --ground:#0A0D13;
+    --panel:#141A24;
+    --panel-2:#1C2530;
+    --panel-3:#26313E;
+    --ink:#E7ECF3;
+    --ink-2:#A2AEBF;
+    --ink-3:#78849A;
+    --line:#2B3542;
+    --line-soft:#1E2732;
+    --flow:#74AAE8;
+    --flow-soft:#1A2938;
+    --alert:#E87864;
+    --alert-soft:#2E1F1C;
+    --ok:#5CBF97;
+    --ok-soft:#16291F;
+  }
+
+  *{box-sizing:border-box;}
+  body{
+    background:var(--ground);color:var(--ink);
+    font-family:var(--sans);font-size:16.5px;line-height:1.6;
+    margin:0;padding:0 4vw 7rem;-webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1120px;margin:0 auto;}
+
+  /* ---------- masthead ---------- */
+  .top{padding:4rem 0 0;}
+  .modality{
+    font-family:var(--mono);font-size:11px;letter-spacing:.15em;text-transform:uppercase;
+    color:var(--flow);display:flex;flex-wrap:wrap;gap:.35rem 1.5rem;margin-bottom:1.5rem;
+  }
+  .modality span{white-space:nowrap;}
+  .modality span::before{content:"▸ ";color:var(--ink-3);}
+  h1{
+    font-size:clamp(2.2rem,5.6vw,3.5rem);line-height:1.06;letter-spacing:-.028em;
+    font-weight:600;margin:0;max-width:19ch;text-wrap:balance;
+  }
+  .dek{font-size:1.14rem;line-height:1.55;color:var(--ink-2);max-width:62ch;margin:1.2rem 0 0;}
+
+  /* readout strip — the target parameters */
+  .readout{
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+    gap:1px;background:var(--line);border:1px solid var(--line);margin:2.2rem 0 0;
+  }
+  .readout div{background:var(--panel);padding:.85rem 1rem;}
+  .readout .k{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);}
+  .readout .v{font-family:var(--mono);font-size:1.32rem;font-weight:600;letter-spacing:-.02em;margin-top:.3rem;font-variant-numeric:tabular-nums;}
+
+  /* ---------- sections with depth-scale rail ---------- */
+  section{margin-top:3.4rem;position:relative;padding-left:2.1rem;}
+  section::before{
+    content:"";position:absolute;left:0;top:.5rem;bottom:.5rem;width:9px;
+    border-left:1px solid var(--line);
+    background-image:repeating-linear-gradient(to bottom,var(--line) 0 1px,transparent 1px 15px);
+  }
+  @media(max-width:640px){ section{padding-left:0;} section::before{display:none;} }
+
+  .sec-label{
+    font-family:var(--mono);font-size:10.5px;letter-spacing:.15em;text-transform:uppercase;
+    color:var(--ink-3);margin-bottom:.45rem;
+  }
+  h2{font-size:clamp(1.45rem,3vw,1.85rem);line-height:1.18;letter-spacing:-.018em;font-weight:600;margin:0 0 1.1rem;max-width:26ch;text-wrap:balance;}
+  h3{font-size:1.05rem;font-weight:600;margin:1.9rem 0 .5rem;letter-spacing:-.008em;}
+  p{margin:0 0 1rem;max-width:70ch;}
+  .col{max-width:70ch;}
+  strong{font-weight:600;}
+  a{color:var(--flow);}
+  a:focus-visible{outline:2px solid var(--flow);outline-offset:3px;}
+
+  /* ---------- panels ---------- */
+  .panel{background:var(--panel);border:1px solid var(--line);padding:1.3rem 1.45rem;margin:1.4rem 0;}
+  .panel > :last-child{margin-bottom:0;}
+  .panel-hd{
+    display:flex;justify-content:space-between;align-items:baseline;gap:1rem;flex-wrap:wrap;
+    border-bottom:1px solid var(--line-soft);padding-bottom:.7rem;margin-bottom:.95rem;
+  }
+  .panel-hd h3{margin:0;font-size:1.06rem;}
+  .panel-hd .meta{font-family:var(--mono);font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--flow);white-space:nowrap;}
+
+  .two{display:grid;grid-template-columns:repeat(auto-fit,minmax(310px,1fr));gap:1.1rem;margin:1.4rem 0;}
+  .two .panel{margin:0;}
+
+  .flag{border-left:3px solid var(--flow);background:var(--flow-soft);padding:1rem 1.2rem;margin:1.3rem 0;max-width:70ch;}
+  .flag.warn{border-left-color:var(--alert);background:var(--alert-soft);}
+  .flag.good{border-left-color:var(--ok);background:var(--ok-soft);}
+  .flag > :last-child{margin-bottom:0;}
+  .flag .tag{display:block;font-family:var(--mono);font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--flow);margin-bottom:.45rem;}
+  .flag.warn .tag{color:var(--alert);}
+  .flag.good .tag{color:var(--ok);}
+
+  /* ---------- tables ---------- */
+  .tbl-wrap{overflow-x:auto;margin:1.3rem 0 .5rem;}
+  table{border-collapse:collapse;width:100%;font-size:14px;min-width:560px;}
+  caption{caption-side:bottom;text-align:left;font-family:var(--mono);font-size:10.5px;line-height:1.55;
+    color:var(--ink-3);padding-top:.65rem;letter-spacing:.02em;}
+  th{text-align:left;font-family:var(--mono);font-size:10px;letter-spacing:.13em;text-transform:uppercase;
+    font-weight:600;color:var(--ink-3);padding:.6rem .8rem;border-bottom:1px solid var(--line);vertical-align:bottom;background:var(--panel-2);}
+  td{padding:.62rem .8rem;border-bottom:1px solid var(--line-soft);vertical-align:top;background:var(--panel);}
+  td.num,th.num{text-align:right;font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap;}
+  tbody tr:hover td{background:var(--panel-2);}
+  tr.tot td{background:var(--panel-2);font-weight:600;border-top:1px solid var(--line);border-bottom:2px solid var(--line);}
+  tr.tot:hover td{background:var(--panel-3);}
+  .blue{color:var(--flow);font-weight:600;}
+  .red{color:var(--alert);font-weight:600;}
+  .grn{color:var(--ok);font-weight:600;}
+
+  /* ---------- sequence list ---------- */
+  ol.steps{list-style:none;counter-reset:n;padding:0;margin:1.3rem 0 0;display:grid;gap:.95rem;}
+  ol.steps li{counter-increment:n;display:grid;grid-template-columns:2.6rem 1fr;gap:.9rem;align-items:start;max-width:72ch;}
+  ol.steps li::before{
+    content:"T+" counter(n);font-family:var(--mono);font-size:10px;letter-spacing:.06em;color:var(--flow);
+    padding-top:.3rem;
+  }
+  ol.steps b{display:block;font-size:1rem;margin-bottom:.1rem;}
+  ol.steps p{margin:0;font-size:.94rem;color:var(--ink-2);}
+
+  ul.ticks{list-style:none;padding:0;margin:.7rem 0 1.1rem;max-width:70ch;display:grid;gap:.5rem;}
+  ul.ticks li{display:grid;grid-template-columns:1.1rem 1fr;gap:.6rem;align-items:start;font-size:.97rem;}
+  ul.ticks li::before{content:"□";color:var(--ink-3);font-family:var(--mono);font-size:.95rem;line-height:1.6;}
+  ul.ticks li.no::before{content:"×";color:var(--alert);}
+
+  .script{
+    background:var(--panel-2);border:1px solid var(--line);border-left:3px solid var(--flow);
+    padding:1rem 1.2rem;margin:1rem 0;font-size:.95rem;line-height:1.65;max-width:70ch;
+  }
+  .script p{margin:0 0 .7rem;}
+  .script p:last-child{margin:0;}
+  .script .who{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);display:block;margin-bottom:.55rem;}
+
+  footer{margin-top:3.5rem;padding-top:1.2rem;border-top:1px solid var(--line);}
+  footer p{font-family:var(--mono);font-size:10.5px;line-height:1.7;color:var(--ink-3);max-width:80ch;letter-spacing:.02em;}
+</style>
+
+<div class="wrap">
+
+<header class="top">
+  <div class="modality">
+    <span>RDMS · RVT</span><span>20 years scanning</span><span>New Jersey</span><span>Plan v1</span>
+  </div>
+  <h1>Your credential is the business. Stop renting it out by the shift.</h1>
+  <p class="dek">Two decades of vascular scanning is a licensed, scarce, hard-to-replace skill — and it is currently earning like hourly labour. The goal here is the same skill, sold as a monthly commitment instead of a shift, at a scale that fits around everything else you do.</p>
+  <div class="readout">
+    <div><div class="k">Target income</div><div class="v">$3,000<span style="font-size:.7rem;color:var(--ink-3);">/mo</span></div></div>
+    <div><div class="k">Time budget</div><div class="v">&lt;10<span style="font-size:.7rem;color:var(--ink-3);">hr/wk</span></div></div>
+    <div><div class="k">Startup cost</div><div class="v">&lt;$1,000</div></div>
+    <div><div class="k">Clients needed</div><div class="v">3</div></div>
+    <div><div class="k">Time to first $</div><div class="v">4-6<span style="font-size:.7rem;color:var(--ink-3);">wks</span></div></div>
+  </div>
+</header>
+
+<section>
+  <div class="sec-label">The structure</div>
+  <h2>Two revenue lines, and only one of them is scanning</h2>
+  <div class="col">
+    <p>Per-diem shifts will hit your number, but they stop the moment you stop. The plan below runs one scanning line for immediate cash and a second line that is genuinely recurring — and the first line is how you find customers for the second.</p>
+  </div>
+
+  <div class="two">
+    <div class="panel">
+      <div class="panel-hd"><h3>Line A — Contract scan sessions</h3><span class="meta">Cash now</span></div>
+      <p>Small practices want vascular studies in-house but cannot justify a full-time tech. You cover a standing half-day — the same afternoon every week — at their facility, on their machine. They bill the study; you invoice a flat session rate.</p>
+      <p style="margin-bottom:0;"><strong>Best fits:</strong> vein and varicose clinics, nephrology and dialysis access centres, podiatry practices running diabetic PAD screening, wound care, small cardiology groups.</p>
+    </div>
+    <div class="panel">
+      <div class="panel-hd"><h3>Line B — Accreditation &amp; QA retainer</h3><span class="meta">The engine</span></div>
+      <p>Vascular labs carry IAC accreditation, and it obliges them to run a documented quality assurance programme — correlation reviews, technical standards, protocol manuals, reaccreditation every three years. Small practices are consistently bad at this and know it.</p>
+      <p style="margin-bottom:0;">You run their QA as a monthly retainer. Mostly remote. A few hours a <em>month</em>, not a week.</p>
+    </div>
+  </div>
+
+  <div class="flag good">
+    <span class="tag">Why this combination works</span>
+    <p>Every practice you scan at is a qualified prospect for the retainer — you are already inside, you have seen their protocols, and you know exactly where their documentation is thin. Line A is not just income, it is your sales pipeline for Line B. Most people in your position only ever run Line A.</p>
+  </div>
+
+  <div class="col">
+    <p>There is a second, quieter reason Line B is valuable to them: accreditation requires appropriately credentialed technical staff. A dual-registered RVT attached to their lab is not just a service they buy — it is a compliance box your presence helps close.</p>
+  </div>
+</section>
+
+<section>
+  <div class="sec-label">The arithmetic</div>
+  <h2>How three clients get you to $3,000 on six hours a week</h2>
+  <div class="tbl-wrap">
+    <table>
+      <caption>Rate ranges are typical for a dual-credentialed vascular tech contracting independently — confirm against your own local market before quoting. Hours shown are delivery time and exclude travel and admin.</caption>
+      <thead>
+        <tr><th>Revenue line</th><th class="num">Rate</th><th class="num">Volume</th><th class="num">Time</th><th class="num">Monthly</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Contract scan session</strong><br><span style="color:var(--ink-2);font-size:13px;">One standing half-day per week, one practice</span></td>
+          <td class="num">$90&ndash;110/hr</td><td class="num">4 hr &times; 4.3</td><td class="num">4 hr/wk</td><td class="num blue">$1,550</td>
+        </tr>
+        <tr>
+          <td><strong>QA retainer, lab #1</strong><br><span style="color:var(--ink-2);font-size:13px;">Correlation review, QA log, protocol upkeep</span></td>
+          <td class="num">$750/mo</td><td class="num">1 lab</td><td class="num">3 hr/mo</td><td class="num blue">$750</td>
+        </tr>
+        <tr>
+          <td><strong>QA retainer, lab #2</strong><br><span style="color:var(--ink-2);font-size:13px;">Same package, second practice</span></td>
+          <td class="num">$750/mo</td><td class="num">1 lab</td><td class="num">3 hr/mo</td><td class="num blue">$750</td>
+        </tr>
+        <tr class="tot"><td>Baseline</td><td class="num">&mdash;</td><td class="num">3 clients</td><td class="num">~6 hr/wk</td><td class="num grn">$3,050</td></tr>
+        <tr>
+          <td style="color:var(--ink-2);"><em>Upside — reaccreditation project</em><br><span style="font-size:13px;">One-off, every three years per lab</span></td>
+          <td class="num" style="color:var(--ink-2);">$2,500&ndash;4,000</td><td class="num" style="color:var(--ink-2);">episodic</td><td class="num" style="color:var(--ink-2);">~20 hr</td><td class="num" style="color:var(--ink-2);">bonus</td>
+        </tr>
+        <tr>
+          <td style="color:var(--ink-2);"><em>Upside — board prep tutoring</em><br><span style="font-size:13px;">SPI and vascular registry candidates</span></td>
+          <td class="num" style="color:var(--ink-2);">$85&ndash;120/hr</td><td class="num" style="color:var(--ink-2);">on demand</td><td class="num" style="color:var(--ink-2);">flexible</td><td class="num" style="color:var(--ink-2);">fill-in</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="col">
+    <p>Note what the mix does to your risk. If the scanning contract ends, you keep $1,500 of retainer revenue and roughly four hours a week back to replace it. If a retainer lapses, you lose $750 and three hours a month. <strong>No single client can take out more than half your income</strong>, which is the actual definition of the low-risk you asked for.</p>
+    <p>The retainers are also the only part that compounds. A fourth and fifth lab cost you three hours each and no new selling effort once you have a reference client — that is the path from $3,000 to $5,000 without touching the time budget.</p>
+  </div>
+</section>
+
+<section>
+  <div class="sec-label">Demand map</div>
+  <h2>Who actually writes the cheque</h2>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Buyer</th><th>Why they need you</th><th class="num">Line</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Vein &amp; varicose clinics</strong></td><td>Every procedure needs a venous reflux study first. High, predictable volume; often chasing accreditation to satisfy payers.</td><td class="num blue">A + B</td></tr>
+        <tr><td><strong>Nephrology / dialysis access</strong></td><td>Fistula and graft surveillance runs on a clinical schedule, so the volume is recurring by protocol rather than by referral luck.</td><td class="num blue">A</td></tr>
+        <tr><td><strong>Vascular surgery groups</strong></td><td>Accreditation is effectively mandatory for reimbursement, and their QA programme is usually the weakest part of it.</td><td class="num blue">B</td></tr>
+        <tr><td><strong>Podiatry &amp; wound care</strong></td><td>Diabetic PAD screening and arterial assessment. Rarely have a tech on staff at all.</td><td class="num blue">A</td></tr>
+        <tr><td><strong>Small cardiology practices</strong></td><td>Carotid and venous studies alongside echo; often short-staffed on the vascular side specifically.</td><td class="num blue">A + B</td></tr>
+        <tr><td><strong>Sonography programmes</strong></td><td>Clinical instruction and adjunct teaching. Scheduled, capped, but very steady and low-stress.</td><td class="num blue">Backup</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="flag">
+    <span class="tag">Where to get the list</span>
+    <p>The IAC publishes a directory of accredited facilities. Filter to your commuting radius and you have a targeted prospect list for Line B — with the added advantage that facilities approaching their three-year reaccreditation are the warmest possible leads. Cross-reference against practices you or your colleagues already know from twenty years in the field, and start there.</p>
+  </div>
+</section>
+
+<section>
+  <div class="sec-label">Client acquisition</div>
+  <h2>Getting the first three</h2>
+  <div class="col">
+    <p>You are not cold-selling a novel service. You are a known professional in a small regional community offering to solve a problem the buyer already knows they have. That means direct contact, not marketing.</p>
+    <p>Skip the website. Skip the logo. A one-page rate sheet and thirty phone calls will outperform anything you could build.</p>
+  </div>
+
+  <h3>The scanning approach</h3>
+  <div class="script">
+    <span class="who">Call the practice manager, not the physician</span>
+    <p>&ldquo;Hi, I'm an RDMS and RVT with twenty years of vascular experience, working independently in the area. I'm reaching out because practices your size often want to bring vascular studies in-house but can't justify a full-time tech.</p>
+    <p>I cover standing half-day sessions — same afternoon each week, on your equipment, flat session rate, I carry my own malpractice. If your referring volume would support four hours a week, it's usually worth a conversation. Would it make sense to look at your numbers together?&rdquo;</p>
+  </div>
+
+  <h3>The retainer approach</h3>
+  <div class="script">
+    <span class="who">Ask about the pain before you pitch</span>
+    <p>&ldquo;Quick question — who handles your QA documentation and correlation reviews for accreditation right now?&rdquo;</p>
+    <p><em>Wait. The answer is almost always an uncomfortable pause, a physician doing it badly at midnight, or a tech who left.</em></p>
+    <p>&ldquo;That's what I hear most places. I run that as a monthly service for a few labs — correlation log, QA reviews, protocol manual kept current, and I keep you audit-ready so reaccreditation isn't a fire drill. Flat monthly, mostly remote. Want me to look at where you stand?&rdquo;</p>
+  </div>
+
+  <div class="col">
+    <p>The free diagnostic is your closer. Offer to review their current QA documentation at no charge and tell them what would fail an audit. It costs you an hour, it demonstrates twenty years of expertise better than any credential list, and practices rarely walk away from someone who has just shown them a live compliance gap.</p>
+  </div>
+</section>
+
+<section>
+  <div class="sec-label">Setup</div>
+  <h2>What you need before the first invoice</h2>
+  <div class="two">
+    <div class="panel">
+      <div class="panel-hd"><h3>Do this</h3><span class="meta">~$600&ndash;900</span></div>
+      <ul class="ticks">
+        <li><strong>Confirm New Jersey licensure requirements</strong> for independent sonography practice — several states now license sonographers separately from national registry, and rules have changed recently. Verify before you contract, not after.</li>
+        <li><strong>Form a single-member LLC</strong> and get an EIN. Cheap, fast, and it keeps personal assets separate.</li>
+        <li><strong>Carry your own professional liability policy.</strong> Do not rely on the practice's coverage as a contractor — theirs may not extend to you.</li>
+        <li><strong>Written contractor agreement</strong> with each practice. New Jersey applies a strict test to independent contractor status, so having multiple clients, your own insurance and a real agreement all matter.</li>
+        <li><strong>Charge flat time-based rates</strong> — per session or per month, not per study tied to volume. Cleaner and simpler to defend.</li>
+        <li><strong>One-page rate sheet.</strong> Credentials, services, rates, coverage. That is your entire marketing budget.</li>
+      </ul>
+    </div>
+    <div class="panel">
+      <div class="panel-hd"><h3>Do not do this</h3><span class="meta">Risk</span></div>
+      <ul class="ticks">
+        <li class="no"><strong>Don't buy an ultrasound machine.</strong> Fifteen to forty thousand dollars converts a zero-risk business into a leveraged one overnight. Only revisit once a client has committed to volume that pays for it.</li>
+        <li class="no"><strong>Don't open an elective 3D/4D keepsake studio.</strong> Capital-heavy, storefront lease, constant marketing, and non-medical fetal imaging is discouraged by regulators. It fails every constraint you set.</li>
+        <li class="no"><strong>Don't run direct-to-consumer screening events</strong> without a physician interpretation arrangement in place. Your community network makes this tempting — the scope-of-practice and liability exposure makes it a bad first move.</li>
+        <li class="no"><strong>Never interpret.</strong> You scan and provide technical findings; the physician reads and diagnoses. That line protects your licence, and blurring it is the fastest way to lose everything else here.</li>
+        <li class="no"><strong>Don't take equity or revenue share</strong> in place of a rate. You are buying predictability, which is the entire point.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="sec-label">Execution</div>
+  <h2>First ninety days</h2>
+  <ol class="steps">
+    <li><div><b>Weeks 1&ndash;2 &mdash; Get legal and get a list</b><p>Verify licensure requirements, form the LLC, bind the insurance policy, write the one-page rate sheet. In parallel, build a list of thirty target practices within a thirty-minute drive, cross-referenced against the IAC accredited-facility directory.</p></div></li>
+    <li><div><b>Weeks 3&ndash;6 &mdash; Ten calls a week, scanning first</b><p>Lead with the contract scanning offer, because it is the easier yes and it gets you physically inside practices. Target: one standing weekly session signed. That alone is roughly half your income goal.</p></div></li>
+    <li><div><b>Weeks 6&ndash;10 &mdash; Convert from the inside</b><p>Once you are scanning somewhere, ask the QA question. Offer the free documentation review. Your first retainer should come from a practice that already knows your work — that is a far shorter sale than a cold one.</p></div></li>
+    <li><div><b>Weeks 10&ndash;13 &mdash; Second retainer, then stop selling</b><p>Use the first retainer client as a reference and land a second. At three clients you are at target. Hold there deliberately for a quarter and let the systems settle before adding anyone.</p></div></li>
+  </ol>
+  <div class="flag warn">
+    <span class="tag">The honest risk</span>
+    <p>Nothing in this plan is likely to fail on the numbers. The realistic failure mode is the one visible in this conversation: a new idea arriving in month two and pulling attention away before the third client is signed. Ninety days of narrow focus is genuinely the hardest requirement on this page — harder than any of the arithmetic.</p>
+  </div>
+</section>
+
+<footer>
+  <p>Planning document, not legal, tax or regulatory advice. Licensure requirements, contractor classification rules, accreditation obligations and insurance needs vary by state and change over time — confirm each with the relevant New Jersey authority, a healthcare attorney and your insurer before contracting. Rate figures are typical market ranges used for modelling, not quotes.</p>
+</footer>
+
+</div>
